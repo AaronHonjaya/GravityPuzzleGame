@@ -24,8 +24,8 @@ public class Player extends GameObject{
 
 
 	private BufferedImage player;
-	private final double GRAVITY = 0.1;
-	private final double maxVel = 5;
+	private final double GRAVITY = 0.5;
+	private final double maxVel = 10;
 	private boolean isRightOrUpModel;
 	private SpriteLoader ss;
 	private boolean reachedFlag;
@@ -34,7 +34,7 @@ public class Player extends GameObject{
 	
 
 	
-	private PlayingHandler handler;
+	
 
 	
 	public Player(double x, double y, ObjectType type, PlayingHandler handler) {
@@ -42,7 +42,7 @@ public class Player extends GameObject{
 		isRightOrUpModel = true;
 		this.width = 32; 
 		this.height = 32;
-		this.handler = handler;
+		
 		reachedFlag = false;
 		id = UUID.randomUUID();
 		loadImages();
@@ -98,6 +98,7 @@ public class Player extends GameObject{
 		if(falling || jumping) {
 			updateGrav();
 		}
+		System.out.println("player ticked");
 		//Collision(objects);
 		checkDirection();
 		
@@ -331,7 +332,7 @@ public class Player extends GameObject{
 				return new Rectangle((int)(x+5), (int)(y+height-7), (int)width-10, (int)7);
 				
 			default: 
-				return new Rectangle((int)((int)x+(width/4)), (int)((int)y+(height/2)), (int)width/2, (int)(height/2));
+				return new Rectangle((int)((int)x+(width/4))+1, (int)((int)y+(height/2)), (int)width/2-2, (int)(height/2));
 			
 		}
 		
@@ -351,7 +352,7 @@ public class Player extends GameObject{
 
 		
 		default: 
-			return new Rectangle((int) ((int)x+(width/4)), (int)y, (int)width/2, (int)height/2);
+			return new Rectangle((int) ((int)x+(width/4))+1, (int)y, (int)width/2-2, (int)height/2);
 		}
 	}
 	
@@ -368,7 +369,7 @@ public class Player extends GameObject{
 		
 		case PLAYER_R: 
 			
-			return new Rectangle((int)((int)x+(width/2)), (int)((int)y+(height/4)), (int)width/2, (int)height/2);
+			return new Rectangle((int)((int)x+(width/2)), (int)((int)y+(height/4))+1, (int)width/2, (int)height/2-2);
 
 	
 		default: 
@@ -389,7 +390,7 @@ public class Player extends GameObject{
 				return new Rectangle((int)((int)x+(width/4)), (int)((int)y+(height/2)), (int)width/2, (int)height/2);
 			
 			case PLAYER_R: 
-				return new Rectangle((int)x, (int)((int)y+(height/4)), (int)width/2, (int)height/2);
+				return new Rectangle((int)x, (int)((int)y+(height/4))+1, (int)width/2, (int)height/2-2);
 
 			default: 
 				return new Rectangle((int)x, (int)y+5, (int)7, (int)height-10);

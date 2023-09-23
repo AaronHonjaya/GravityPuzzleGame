@@ -28,8 +28,7 @@ public class PlayingHandler implements Handler{
 	
 	public HashMap<UUID, GameObject> allObjects = new HashMap<>();
 	public HashMap<UUID, Player> players = new HashMap<>();
-	//public LinkedList<GameObject> objects = new LinkedList<>();
-	//public LinkedList<Player> players = new LinkedList<>();
+	
 	
 	public PlayingHandler() {
 		SpriteLoader sl = new SpriteLoader("/sprite_sheet.png");
@@ -46,43 +45,36 @@ public class PlayingHandler implements Handler{
 		}
 	}
 
-	public void tick() {
-		/*
-		long lastTime = System.nanoTime();
-		final double numTicks = 5000000;
-		double ns = 1e9 / numTicks;
-		double delta = 0;
-		long timer = System.currentTimeMillis();
-		*/
+	public void tick() {	
+		
 		for(UUID playerID : players.keySet() ) {
 			Player currPlayer = players.get(playerID);
+			//Player futurePlayer = new Player()
 			currPlayer.tick();
-			/*
-			long now = System.nanoTime();
-			delta += (now - lastTime)/ns;
-			lastTime = now;
-			*/
-			//if(delta >= 1) {
+			
 				for(UUID objectID : allObjects.keySet()) {
+					if(objectID == playerID) {
+						continue;
+					}
 					
 					GameObject tempObject = allObjects.get(objectID);
-					tempObject.tick();
+					if(!ObjectType.isPlayer(tempObject))
+						tempObject.tick();
 					
-					if(tempObject.getID() != currPlayer.getID() && players.containsKey(tempObject.getID())){
+					
+					if(ObjectType.isBlock(tempObject)){
+						checkBlockCollision(currPlayer, tempObject);
+					}
+					else if(tempObject.getID() != currPlayer.getID() && players.containsKey(tempObject.getID())){
 						checkPlayerCollision(currPlayer, players.get(tempObject.getID()));
 					}
 					else if(ObjectType.isFlag(tempObject)) {
 						checkFlagCollision(currPlayer, (Flag) tempObject);
 					}
-					else if(ObjectType.isBlock(tempObject)){
-						checkBlockCollision(currPlayer, tempObject);
-					}
+					
 				}
-				//delta--;
-			//}
-			//if(System.currentTimeMillis()-timer > 1000) {
-				//timer += 1000;
-			//}
+
+		
 			
 			
 		}
@@ -112,6 +104,7 @@ public class PlayingHandler implements Handler{
 					if(player.getBoundsTop().intersects(obj.getBounds())) { 
 						player.setY(obj.getY() + player.getHeight());
 						player.setVelY(0);
+						System.out.println("red top touched");
 					}
 					if(player.getBoundsRight().intersects(obj.getBounds())) {
 						player.setX(obj.getX() - player.getWidth());
@@ -132,7 +125,7 @@ public class PlayingHandler implements Handler{
 						player.setVelX(0);
 						player.setFalling(false);
 						player.setJumping(false);
-						System.out.println("test B");
+						//System.out.println("test B");
 
 					}else{
 						player.setFalling(true);
@@ -140,7 +133,7 @@ public class PlayingHandler implements Handler{
 					if(player.getBoundsLeft().intersects(obj.getBounds())) {
 						player.setX(obj.getX() + player.getWidth());
 						player.setVelX(0);
-						System.out.println("test L");
+						//System.out.println("test L");
 					}
 					if(player.getBounds().intersects(obj.getBounds())) {
 						player.setY(obj.getY() - player.getHeight());
@@ -148,7 +141,7 @@ public class PlayingHandler implements Handler{
 					}
 					if(player.getBoundsTop().intersects(obj.getBounds())) {
 						player.setY(obj.getY() + player.getHeight());
-						System.out.println("test T");
+						//System.out.println("test T");
 						
 					}
 					break;
@@ -175,18 +168,23 @@ public class PlayingHandler implements Handler{
 							player.setFalling(false);
 							player.setJumping(false);
 							System.out.println("Red:  x = " + player.getX() + " | y = " + (player.getY()+player.getHeight()));
+							System.out.println(" | velX = " + player.getVelX() + " | velY = " + player.getVelY());
 							System.out.println("Blue:  x = " + otherPlayer.getX() + " | y = " + otherPlayer.getY());
+							System.out.println(" | velX = " + otherPlayer.getVelX() + " | velY = " + otherPlayer.getVelY());
 							System.out.println();
-
 						}
 						if(player.getBoundsRight().intersects(otherPlayer.getBoundsLeft())) {
 							player.setVelX(0);
 							player.setX(otherPlayer.getX() - player.getWidth());
+							System.out.println("test r");
 						}
 						if(player.getBoundsTop().intersects(otherPlayer.getBounds())) {
-							player.setY(otherPlayer.getY() + player.getHeight());
+							if(player.isJumping())
+								player.setY(otherPlayer.getY() + player.getHeight());
+							System.out.println("test T");
+
 						}
-						if(player.getBoundsLeft().intersects(otherPlayer.getBoundsRight())) {
+						if(otherPlayer.getVelX() == 0 && player.getBoundsLeft().intersects(otherPlayer.getBoundsRight())) {
 							player.setX(otherPlayer.getX()+player.getWidth());
 						}
 						break;
@@ -211,13 +209,12 @@ public class PlayingHandler implements Handler{
 							player.setY(otherPlayer.getY() - player.getHeight());
 						}
 						if(player.getBoundsLeft().intersects(otherPlayer.getBoundsRight())) {
-							player.setX(otherPlayer.getX()+ player.getWidth());
+							if(player.isJumping())
+								player.setX(otherPlayer.getX()+ player.getWidth());
 						}
-						if(player.getBoundsTop().intersects(otherPlayer.getBounds())) {
+						if(otherPlayer.getVelY() == 0 && player.getBoundsTop().intersects(otherPlayer.getBounds())) {
 							player.setY(otherPlayer.getY() + player.getHeight());
-							
 						}
-						
 						break;
 					case PLAYER_L:
 						break;
@@ -312,17 +309,16 @@ public class PlayingHandler implements Handler{
 			if(temp.getType() == ObjectType.PLAYER_D) {
 				switch(key) {
 					case KeyEvent.VK_RIGHT:
-						//temp.setX(temp.getX()+5);
-						temp.setVelX(2);
+						temp.setVelX(5);
 						break;
 					case KeyEvent.VK_LEFT:
-						temp.setVelX(-2);
+						temp.setVelX(-5);
 						break;
 					case KeyEvent.VK_UP:
 						System.out.println("jumped");
 						if(!temp.isJumping()) {
 							temp.setJumping(true);
-							temp.setVelY(-4.5);
+							temp.setVelY(-10);
 						}
 						break;
 				}
@@ -330,16 +326,16 @@ public class PlayingHandler implements Handler{
 			else if(temp.getType() == ObjectType.PLAYER_R) {
 				switch(key) {
 					case KeyEvent.VK_A:
-						temp.setVelY(2);
+						temp.setVelY(5);
 						break;
 					case KeyEvent.VK_D:
-						temp.setVelY(-2);
+						temp.setVelY(-5);
 						break;
 					case KeyEvent.VK_SPACE:
 						System.out.println("jumped");
 						if(!temp.isJumping()) {
 							temp.setJumping(true);
-							temp.setVelX(-4.5);
+							temp.setVelX(-10);
 						}
 						break;
 				}
