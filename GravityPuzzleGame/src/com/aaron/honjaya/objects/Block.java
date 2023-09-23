@@ -17,11 +17,6 @@ public class Block extends GameObject{
 	}
 
 	@Override
-	public void tick() {
-		
-	}
-
-	@Override
 	public void render(Graphics g) {
 		g.setColor(Color.white);
 		g.drawRect((int)x, (int)y, 32, 32);
@@ -34,25 +29,15 @@ public class Block extends GameObject{
 		return new Rectangle((int)x, (int)y, 32, 32);
 	}
 
-
-
 	@Override
-	public Rectangle getBoundsTop() {
+	public void update() {
 		// TODO Auto-generated method stub
-		return null;
+		
 	}
 
-	@Override
-	public Rectangle getBoundsRight() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
-	@Override
-	public Rectangle getBoundsLeft() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+
+	
 
 
 }

@@ -4,6 +4,7 @@ import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.lang.System.Logger.Level;
 import java.util.*;
 
 import com.aaron.honjaya.framework.GameObject;
@@ -13,45 +14,38 @@ import com.aaron.honjaya.objects.Flag;
 import com.aaron.honjaya.objects.Player;
 import com.aaron.honjaya.utils.SpriteLoader;
 
+import gameMain.Game;
+import level.LevelManager;
+
 
 public class PlayingHandler implements Handler{
 	
 
 	private BufferedImage spriteSheet = null;
-	private ArrayList<BufferedImage> levels = new ArrayList<>();
-	private BufferedImage image = null;
-	private int numPlayers; 
-	private int numPlayersFinished; 
+	private BufferedImage image = null; 
 	private boolean levelIsFinished; 
-	
-
 	
 	public HashMap<UUID, GameObject> allObjects = new HashMap<>();
 	public HashMap<UUID, Player> players = new HashMap<>();
-	
+	private LevelManager level;
 	
 	public PlayingHandler() {
-		SpriteLoader sl = new SpriteLoader("/sprite_sheet.png");
-		levels.add(sl.loadImage("/testLevel.png"));
-		numPlayers = 0;
-		numPlayersFinished = 0;
+		level = new LevelManager(this);
+		level.loadLevel(0);
 	}
 	
 	public void render(Graphics g) {
 		for(UUID id : allObjects.keySet()) {
 			GameObject tempObject = allObjects.get(id);
 			tempObject.render(g);
-			
+			level.render(g);
 		}
 	}
 
 	public void tick() {	
-		
 		for(UUID playerID : players.keySet() ) {
 			Player currPlayer = players.get(playerID);
-			currPlayer.tick();
-			//Hello how are you;
-			
+			currPlayer.update();
 				for(UUID objectID : allObjects.keySet()) {
 					if(objectID == playerID) {
 						continue;
@@ -59,7 +53,7 @@ public class PlayingHandler implements Handler{
 					
 					GameObject tempObject = allObjects.get(objectID);
 					if(!ObjectType.isPlayer(tempObject))
-						tempObject.tick();
+						tempObject.update();
 					
 					
 					if(ObjectType.isBlock(tempObject)){
@@ -73,21 +67,19 @@ public class PlayingHandler implements Handler{
 					}
 					
 				}
-
-		
-			
-			
 		}
-		if(!levelIsFinished && numPlayers == numPlayersFinished) {
-			System.out.println("test");
-			numPlayers = 0;
-			numPlayersFinished = 0;
-			levelIsFinished = true;
+		
+		if(level.isLevelFinished()) {
 			allObjects.clear();
 			players.clear();
-			loadLevel(0);
+			level.loadLevel(0);
 		}
 	}
+
+	
+	
+	
+	
 	
 	
 	private void checkBlockCollision(Player player, GameObject obj) {
@@ -150,7 +142,7 @@ public class PlayingHandler implements Handler{
 	
 	private void checkFlagCollision(Player player, Flag flag) {
 		if(!player.hasReachedFlag() && ObjectType.reachedFlag(flag, player) && player.getBounds().intersects(flag.getBounds())) {
-			numPlayersFinished++;
+			level.increaseNumPlayersFinished();
 			player.setReachedFlag(true);
 		}
 			
@@ -233,45 +225,7 @@ public class PlayingHandler implements Handler{
 
 	
 	
-	public void loadLevel(int lvlNum) {
-		levelIsFinished = false;
-		BufferedImage image = levels.get(lvlNum);
-		int w = image.getWidth();
-		int h = image.getHeight();
-		System.out.println(w + " " + h);
-		
-		for(int xx = 0; xx < w; xx++) {
-			for(int yy = 0; yy < h; yy++) {
-				int pixel = image.getRGB(xx, yy);
-				int red = (pixel >> 16) & 0xff;
-				int green = (pixel >> 8) & 0xff;
-				int blue = (pixel) & 0xff;
-
-				if(red == 255 && green == 255 && blue == 255) {
-					addObject(new Block(xx*32, yy*32, ObjectType.BLOCK));
-				}
-				else if(red == 255 && green == 0 && blue == 0) {
-					Player temp = new Player(xx*32, yy*32, ObjectType.PLAYER_D, this);
-					addObject(temp);
-					addPlayer(temp);
-					numPlayers++;
-				}
-				else if(red == 0 && green == 0 && blue == 255) {
-					Player temp = new Player(xx*32, yy*32, ObjectType.PLAYER_R, this);
-					addObject(temp);
-					addPlayer(temp);
-					numPlayers++;
-				}
-				else if(red == 0 && green == 148 && blue == 255) {
-					addObject(new Flag(xx*32, yy*32, ObjectType.FLAG_R, this));
-				}
-				else if(red == 255 && green == 106 && blue == 0) {
-					addObject(new Flag(xx*32, yy*32, ObjectType.FLAG_D, this));
-				}
-			}
-		}
-		System.out.println(numPlayers + ", " + numPlayersFinished);
-	}
+	
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
@@ -305,43 +259,46 @@ public class PlayingHandler implements Handler{
 		int key = e.getKeyCode();
 		
 		for(UUID objectID : allObjects.keySet()) {
-			GameObject temp = allObjects.get(objectID);
-			if(temp.getType() == ObjectType.PLAYER_D) {
-				switch(key) {
-					case KeyEvent.VK_RIGHT:
-						temp.setVelX(5);
-						break;
-					case KeyEvent.VK_LEFT:
-						temp.setVelX(-5);
-						break;
-					case KeyEvent.VK_UP:
-						System.out.println("jumped");
-						if(!temp.isJumping()) {
-							temp.setJumping(true);
-							temp.setVelY(-10);
-						}
-						break;
+			GameObject obj = allObjects.get(objectID);
+			if(ObjectType.isPlayer(obj)) {
+				Player tempPlayer = players.get(objectID);
+				if(obj.getType() == ObjectType.PLAYER_D) {
+					switch(key) {
+						case KeyEvent.VK_RIGHT:
+							tempPlayer.setVelX(5);
+							break;
+						case KeyEvent.VK_LEFT:
+							tempPlayer.setVelX(-5);
+							break;
+						case KeyEvent.VK_UP:
+							System.out.println("jumped");
+							if(!tempPlayer.isJumping()) {
+								tempPlayer.setJumping(true);
+								tempPlayer.setVelY(-10);
+							}
+							break;
+					}
+				}
+				else if(tempPlayer.getType() == ObjectType.PLAYER_R) {
+					switch(key) {
+						case KeyEvent.VK_A:
+							tempPlayer.setVelY(5);
+							break;
+						case KeyEvent.VK_D:
+							tempPlayer.setVelY(-5);
+							break;
+						case KeyEvent.VK_SPACE:
+							System.out.println("jumped");
+							if(!tempPlayer.isJumping()) {
+								tempPlayer.setJumping(true);
+								tempPlayer.setVelX(-10);
+							}
+							break;
+					}
 				}
 			}
-			else if(temp.getType() == ObjectType.PLAYER_R) {
-				switch(key) {
-					case KeyEvent.VK_A:
-						temp.setVelY(5);
-						break;
-					case KeyEvent.VK_D:
-						temp.setVelY(-5);
-						break;
-					case KeyEvent.VK_SPACE:
-						System.out.println("jumped");
-						if(!temp.isJumping()) {
-							temp.setJumping(true);
-							temp.setVelX(-10);
-						}
-						break;
-				}
-			}
+			
 		}
-		
 		if(key == KeyEvent.VK_ESCAPE) {
 			GameState.state = GameState.MENU;
 		}
@@ -353,28 +310,34 @@ public class PlayingHandler implements Handler{
 		int key = e.getKeyCode();
 		
 		for(UUID objectID : allObjects.keySet()) {
-			GameObject temp = allObjects.get(objectID);
-			
-			if(temp.getType() == ObjectType.PLAYER_D) {
-				switch(key) {
-					case KeyEvent.VK_RIGHT:
-						temp.setVelX(0);
-						break;
-					case KeyEvent.VK_LEFT:
-						temp.setVelX(0);
-						break;
+			GameObject obj = allObjects.get(objectID);
+			if(ObjectType.isPlayer(obj)) {
+				
+				Player temp = players.get(objectID);
+				
+				if(temp.getType() == ObjectType.PLAYER_D) {
+					switch(key) {
+						case KeyEvent.VK_RIGHT:
+							temp.setVelX(0);
+							break;
+						case KeyEvent.VK_LEFT:
+							temp.setVelX(0);
+							break;
+					}
+				}else if(temp.getType() == ObjectType.PLAYER_R) {
+					switch(key) {
+						case KeyEvent.VK_A:
+							temp.setVelY(0);
+							break;
+						case KeyEvent.VK_D:
+							temp.setVelY(0);
+							break;
+					}
 				}
-			}else if(temp.getType() == ObjectType.PLAYER_R) {
-				switch(key) {
-					case KeyEvent.VK_A:
-						temp.setVelY(0);
-						break;
-					case KeyEvent.VK_D:
-						temp.setVelY(0);
-						break;
-				}
+				
 			}
-		}
+			
+		}//end of for;
 		
 		
 	}

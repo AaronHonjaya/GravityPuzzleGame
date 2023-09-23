@@ -20,12 +20,9 @@ public class Flag extends GameObject{
 
 	private SpriteLoader ss;
 	private BufferedImage flag;
-	private Handler handler;
 
-	public Flag(double x, double y, ObjectType id, PlayingHandler handler) {
+	public Flag(double x, double y, ObjectType id) {
 		super(x, y, id);
-		
-		this.handler = handler;
 		ss = new SpriteLoader(Constants.spriteSheet);
 		switch(id) {
 			case FLAG_D: 
@@ -43,10 +40,7 @@ public class Flag extends GameObject{
 		}
 	}
 
-	@Override
-	public void tick() {
-		
-	}
+
 
 	@Override
 	public void render(Graphics g) {
@@ -77,22 +71,13 @@ public class Flag extends GameObject{
 
 
 	@Override
-	public Rectangle getBoundsTop() {
+	public void update() {
 		// TODO Auto-generated method stub
-		return null;
+		
 	}
 
-	@Override
-	public Rectangle getBoundsRight() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
-	@Override
-	public Rectangle getBoundsLeft() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
+	
 
 }

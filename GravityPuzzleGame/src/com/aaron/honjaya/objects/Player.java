@@ -9,6 +9,7 @@ import java.util.LinkedList;
 import java.util.UUID;
 
 import com.aaron.honjaya.framework.GameObject;
+import com.aaron.honjaya.framework.MovingObject;
 import com.aaron.honjaya.framework.ObjectType;
 import com.aaron.honjaya.utils.Constants;
 import com.aaron.honjaya.utils.SpriteLoader;
@@ -19,7 +20,7 @@ import gameStates.PlayingHandler;
 
 
 
-public class Player extends GameObject{
+public class Player extends MovingObject{
 	
 
 
@@ -37,12 +38,11 @@ public class Player extends GameObject{
 	
 
 	
-	public Player(double x, double y, ObjectType type, PlayingHandler handler) {
+	public Player(double x, double y, ObjectType type) {
 		super(x, y, type);
 		isRightOrUpModel = true;
 		this.width = 32; 
 		this.height = 32;
-		
 		reachedFlag = false;
 		id = UUID.randomUUID();
 		loadImages();
@@ -92,7 +92,7 @@ public class Player extends GameObject{
 	}
 	
 	@Override
-	public void tick() {
+	public void update() {
 		x += velX;
 		y += velY;
 		if(falling || jumping) {
@@ -104,6 +104,7 @@ public class Player extends GameObject{
 		
 	}
 	
+	/*
 	private void Collision(LinkedList<GameObject> objects) {
 		for(int i = 0; i < objects.size(); i++) {
 			
@@ -256,7 +257,7 @@ public class Player extends GameObject{
 		//end of switch
 		
 	}
-	
+	*/
 	
 
 	public void updateGrav() {

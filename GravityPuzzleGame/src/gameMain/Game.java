@@ -28,8 +28,14 @@ public class Game extends Canvas implements Runnable{
 	
 
 	//private static final long serialVersionUID = 1L;
-	public static final int WIDTH = 800; 
-	public static final int HEIGHT = 600; 
+	public static final int TILE_SIZE = 32;
+	
+	public static final int WIDTH_IN_TILES = 25;
+	public static final int HEIGHT_IN_TILES = 18;
+	
+	public static final int WIDTH = TILE_SIZE * WIDTH_IN_TILES; 
+	public static final int HEIGHT = TILE_SIZE * HEIGHT_IN_TILES; 
+	
 	public final String TITLE = "Puzzle Game";
 
 	
@@ -47,7 +53,7 @@ public class Game extends Canvas implements Runnable{
 		this.requestFocus();
 		
 		playingHandler = new PlayingHandler();
-		playingHandler.loadLevel(0);
+		
 		
 		menuHandler = new MenuHandler();
 		

@@ -11,7 +11,6 @@ public abstract class GameObject {
 	
 	protected double x, y;
 	protected ObjectType type; 
-	protected double velX, velY;
 	protected double width, height;
 	
 	
@@ -20,8 +19,7 @@ public abstract class GameObject {
 	protected final double TOP_BOARDER = 0;
 	protected final double BOTTOM_BOARDER = Game.HEIGHT - this.height;
 	
-	protected boolean jumping = false;
-	protected boolean falling = true;
+
 	protected UUID id;
 	
 	public GameObject() {};
@@ -33,26 +31,9 @@ public abstract class GameObject {
 		this.id = UUID.randomUUID();
 	}
 	
-	
-	public abstract void tick();
+	public abstract void update();
 	public abstract void render(Graphics g);
 
-	
-	public boolean isJumping() {
-		return jumping;
-	}
-
-	public void setJumping(boolean jumping) {
-		this.jumping = jumping;
-	}
-
-	public boolean isFalling() {
-		return falling;
-	}
-
-	public void setFalling(boolean falling) {
-		this.falling = falling;
-	}
 
 	
 	
@@ -96,23 +77,10 @@ public abstract class GameObject {
 		this.y = y;
 	}
 	
-	public void setVelX(double velX) {
-		this.velX = velX;
-	}
-	public void setVelY(double velY) {
-		this.velY = velY;
-	}
-	public double getVelX() {
-		return this.velX; 
-	}
-	public double getVelY() {
-		return this.velY;
-	}
+
 	
 	public abstract Rectangle getBounds();
-	public abstract Rectangle getBoundsTop();
-	public abstract Rectangle getBoundsRight();
-	public abstract Rectangle getBoundsLeft();
+	
 	
 	
 
