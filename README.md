@@ -1,2 +1,0 @@
-# GravityPuzzleGame
-Personal Project/Game.
