@@ -80,6 +80,8 @@ public abstract class GameObject {
 
 	
 	public abstract Rectangle getBounds();
+
+
 	
 	
 	

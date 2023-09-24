@@ -32,26 +32,43 @@ public class Player extends MovingObject{
 	private boolean reachedFlag;
 	private BufferedImage images[];
 	private int imgIndex;
+	private double futureX, futureY;
+	private boolean inAir;
 	
 
 	
 	
 
 	
+	public boolean isInAir() {
+		return inAir;
+	}
+
+
+
+	public void setInAir(boolean inAir) {
+		this.inAir = inAir;
+	}
+
+
+
 	public Player(double x, double y, ObjectType type) {
 		super(x, y, type);
 		isRightOrUpModel = true;
-		this.width = 32; 
-		this.height = 32;
 		reachedFlag = false;
 		id = UUID.randomUUID();
+		
 		loadImages();
+		this.width = images[0].getWidth(); 
+		this.height = images[0].getHeight();
+		
+	
 	}
 	
 
 
 	private void loadImages() {
-		ss = new SpriteLoader(Constants.spriteSheet);
+		ss = new SpriteLoader(Constants.smallerSpriteSheet);
 		int col = 0;
 		switch(type) {
 			case PLAYER_D: 
@@ -77,32 +94,34 @@ public class Player extends MovingObject{
 	
 	@Override
 	public void render(Graphics g) {
-		g.drawImage(images[imgIndex], (int)x, (int)y, null);
 		
+		g.drawImage(images[imgIndex], (int)x, (int)y, null);
 		
 		Graphics2D g2d = (Graphics2D) g;
 		g.setColor(Color.green);
 		
+		g2d.draw(getBoundsBottom());
 		g2d.draw(getBounds());
-		g2d.draw(getBoundsRight());
-		g2d.draw(getBoundsLeft());
-		g2d.draw(getBoundsTop());
+		
 		
 
 	}
 	
 	@Override
-	public void update() {
+	public void updateXPos() {
 		x += velX;
+	}
+	
+	@Override
+	public void updateYPos() {
 		y += velY;
-		if(falling || jumping) {
-			updateGrav();
-		}
-		System.out.println("player ticked");
-		//Collision(objects);
-		checkDirection();
+	}
+	
+	@Override 
+	public void update() {
 		
 	}
+
 	
 	/*
 	private void Collision(LinkedList<GameObject> objects) {
@@ -260,6 +279,30 @@ public class Player extends MovingObject{
 	*/
 	
 
+	public double getFutureX() {
+		return futureX;
+	}
+
+
+
+	public void setFutureX(double futureX) {
+		this.futureX = futureX;
+	}
+
+
+
+	public double getFutureY() {
+		return futureY;
+	}
+
+
+
+	public void setFutureY(double futureY) {
+		this.futureY = futureY;
+	}
+
+
+
 	public void updateGrav() {
 		switch(type) {
 			case PLAYER_L: 
@@ -318,9 +361,14 @@ public class Player extends MovingObject{
 	
 	
 
-
 	@Override
 	public Rectangle getBounds() {
+		return new Rectangle((int)x, (int)y, (int)width, (int)height);
+	}
+
+
+	@Override
+	public Rectangle getBoundsBottom() {
 		switch(type) {
 			//case player_D is default
 			case PLAYER_L: 
@@ -330,10 +378,12 @@ public class Player extends MovingObject{
 				return new Rectangle((int)((int)x+(width/4)), (int)((int)y+(height/2)), (int)width/2, (int)height/2);
 			
 			case PLAYER_R: 
-				return new Rectangle((int)(x+5), (int)(y+height-7), (int)width-10, (int)7);
+				return new Rectangle((int)((int)x+(width/2)), (int)((int)y+(height/4)), (int)width/2+2, (int)height/2);
+
+				//return new Rectangle((int)(x+5), (int)(y+height-7), (int)width-10, (int)7);
 				
 			default: 
-				return new Rectangle((int)((int)x+(width/4))+1, (int)((int)y+(height/2)), (int)width/2-2, (int)(height/2));
+				return new Rectangle((int)((int)x+(width/4)), (int)((int)y+(height/2)), (int)width/2, (int)(height/2)+2);
 			
 		}
 		
@@ -353,7 +403,7 @@ public class Player extends MovingObject{
 
 		
 		default: 
-			return new Rectangle((int) ((int)x+(width/4))+1, (int)y, (int)width/2-2, (int)height/2);
+			return new Rectangle((int) ((int)x+(width/4)), (int)y, (int)width/2, (int)height/2);
 		}
 	}
 	
@@ -416,6 +466,11 @@ public class Player extends MovingObject{
 	public ObjectType getType() {
 		return this.type;
 	}
+
+
+
+
+
 	
 	
 	

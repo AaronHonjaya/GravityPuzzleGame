@@ -8,25 +8,27 @@ import java.util.LinkedList;
 import com.aaron.honjaya.framework.GameObject;
 import com.aaron.honjaya.framework.ObjectType;
 
-public class Block extends GameObject{
+import gameMain.Game;
+
+public class Tile extends GameObject{
 
 	private boolean rendered;
 	
-	public Block(double x, double y, ObjectType id) {
+	public Tile(double x, double y, ObjectType id) {
 		super(x, y, id);
 	}
 
 	@Override
 	public void render(Graphics g) {
 		g.setColor(Color.white);
-		g.drawRect((int)x, (int)y, 32, 32);
+		g.drawRect((int)x, (int)y, Game.TILE_SIZE, Game.TILE_SIZE);
 		
 		
 	}
 
 	@Override
 	public Rectangle getBounds() {
-		return new Rectangle((int)x, (int)y, 32, 32);
+		return new Rectangle((int)x, (int)y, Game.TILE_SIZE, Game.TILE_SIZE);
 	}
 
 	@Override

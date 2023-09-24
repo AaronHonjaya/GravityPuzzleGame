@@ -8,8 +8,8 @@ import javax.imageio.ImageIO;
 public class SpriteLoader {
 
 	private BufferedImage image;
-	public static final int SPRITE_WIDTH = 32;
-	public static final int SPRITE_HEIGHT = 32;
+	public static final int SPRITE_WIDTH = 25;
+	public static final int SPRITE_HEIGHT = 25;
 	
 	public static final int BUTTON_WIDTH = 200;
 	public static final int BUTTON_HEIGHT = 100;

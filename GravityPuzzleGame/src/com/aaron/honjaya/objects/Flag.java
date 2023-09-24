@@ -23,7 +23,7 @@ public class Flag extends GameObject{
 
 	public Flag(double x, double y, ObjectType id) {
 		super(x, y, id);
-		ss = new SpriteLoader(Constants.spriteSheet);
+		ss = new SpriteLoader(Constants.smallerSpriteSheet);
 		switch(id) {
 			case FLAG_D: 
 				flag = ss.grabSpriteImage(0, 3);

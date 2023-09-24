@@ -5,7 +5,7 @@ import java.awt.image.BufferedImage;
 import java.util.*;
 
 import com.aaron.honjaya.framework.*;
-import com.aaron.honjaya.objects.Block;
+import com.aaron.honjaya.objects.Tile;
 import com.aaron.honjaya.objects.Flag;
 import com.aaron.honjaya.objects.Player;
 import com.aaron.honjaya.utils.SpriteLoader;
@@ -42,6 +42,36 @@ public class LevelManager{
 		}
 	}
 	
+	public boolean[][] getSolidTile() {
+		return solidTile;
+	}
+
+
+	public void setSolidTile(boolean[][] solidTile) {
+		this.solidTile = solidTile;
+	}
+
+
+	public HashMap<UUID, GameObject> getLevelObjects() {
+		return levelObjects;
+	}
+
+
+	public PlayingHandler getPlayingHandler() {
+		return playingHandler;
+	}
+
+
+	public ArrayList<BufferedImage> getLevels() {
+		return levels;
+	}
+
+
+	public int getNumPlayersFinished() {
+		return numPlayersFinished;
+	}
+
+
 	public void loadLevel(int lvlNum) {
 		BufferedImage image = levels.get(lvlNum);
 		levelFinished = false;
@@ -57,26 +87,26 @@ public class LevelManager{
 				
 				if(red == 255 && green == 255 && blue == 255) {
 					solidTile[yy][xx] = true;
-					Block temp = new Block(xx*32, yy*32, ObjectType.BLOCK);
+					Tile temp = new Tile(xx*Game.TILE_SIZE, yy*Game.TILE_SIZE, ObjectType.BLOCK);
 					levelObjects.put(temp.getID(), temp);
 				}
 				else if(red == 255 && green == 0 && blue == 0) {
-					Player temp = new Player(xx*32, yy*32, ObjectType.PLAYER_D);
+					Player temp = new Player(xx*Game.TILE_SIZE, yy*Game.TILE_SIZE, ObjectType.PLAYER_D);
 					playingHandler.addObject(temp);
 					playingHandler.addPlayer(temp);
 					numPlayers++;
 				}
 				else if(red == 0 && green == 0 && blue == 255) {
-					Player temp = new Player(xx*32, yy*32, ObjectType.PLAYER_R);
+					Player temp = new Player(xx*Game.TILE_SIZE, yy*Game.TILE_SIZE, ObjectType.PLAYER_R);
 					playingHandler.addObject(temp);
 					playingHandler.addPlayer(temp);
 					numPlayers++;
 				}
 				else if(red == 0 && green == 148 && blue == 255) {
-					playingHandler.addObject(new Flag(xx*32, yy*32, ObjectType.FLAG_R));
+					playingHandler.addObject(new Flag(xx*Game.TILE_SIZE, yy*Game.TILE_SIZE, ObjectType.FLAG_R));
 				}
 				else if(red == 255 && green == 106 && blue == 0) {
-					playingHandler.addObject(new Flag(xx*32, yy*32, ObjectType.FLAG_D));
+					playingHandler.addObject(new Flag(xx*Game.TILE_SIZE, yy*Game.TILE_SIZE, ObjectType.FLAG_D));
 				}
 			}
 		}

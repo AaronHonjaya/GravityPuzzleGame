@@ -13,7 +13,7 @@ import javax.swing.JFrame;
 import com.aaron.honjaya.framework.ObjectType;
 import com.aaron.honjaya.inputs.KeyInput;
 import com.aaron.honjaya.inputs.MouseInput;
-import com.aaron.honjaya.objects.Block;
+import com.aaron.honjaya.objects.Tile;
 import com.aaron.honjaya.objects.Player;
 
 

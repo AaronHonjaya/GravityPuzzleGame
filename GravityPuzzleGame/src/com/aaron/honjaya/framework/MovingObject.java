@@ -13,9 +13,10 @@ public abstract class MovingObject extends GameObject{
 	protected double velX, velY;
 	protected boolean jumping = false;
 	protected boolean falling = true;
+	protected boolean left, up, right, down;
 	
-	public abstract void update();
 	public abstract Rectangle getBounds();
+	public abstract Rectangle getBoundsBottom();
 	public abstract Rectangle getBoundsTop();
 	public abstract Rectangle getBoundsRight();
 	public abstract Rectangle getBoundsLeft();
@@ -49,4 +50,11 @@ public abstract class MovingObject extends GameObject{
 		this.falling = falling;
 	}
 
+	public void updateXPos() {
+		x += velX;
+	}
+
+	public void updateYPos() {
+		y += velY;
+	}
 }
