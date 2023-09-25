@@ -100,31 +100,24 @@ public class CollisionFunctions {
 		return futureHitbox.intersects(otherPlayer.getBounds());
 	}
 	
-	public static boolean isPlayerOnFloor(Player player, HashMap<UUID, Player> players, boolean solidTile[][]) {
+	public static boolean isPlayerOnFloor(Player player, HashMap<UUID, Player> playerList, boolean solidTile[][]) {
 		switch(player.getType()) {
 			case PLAYER_D:
 				if(isSolid(player.getX(), player.getY() + player.getHeight()+1, solidTile)
 					|| isSolid(player.getX()+player.getWidth(), player.getY() + player.getHeight()+1, solidTile)) {
-					if(PlayingHandler.i % 100 == 0) {
-						System.out.println(PlayingHandler.i  + ": tile floor touched");
-					}
 					return true;
 				}
+				break;
 			case PLAYER_R:
 				if(isSolid(player.getX() + player.getWidth() + 1, player.getY(), solidTile)
 						|| isSolid(player.getX()+player.getWidth()+1, player.getY() + player.getHeight(), solidTile)) {
-						if(PlayingHandler.i % 100 == 0) {
-							System.out.println(PlayingHandler.i  + ": tile floor touched");
-						}
 						return true;
 					}
+				break;
 		}
 		
-		for(UUID id: players.keySet()) {
-			if(id != player.getID() && player.getBoundsBottom().intersects(players.get(id).getBounds())) {
-				if(PlayingHandler.i % 100 == 0) {
-					System.out.println(PlayingHandler.i + ": player floor touched");
-				}
+		for(UUID id: playerList.keySet()) {
+			if(id != player.getID() && player.getBoundsBottom().intersects(playerList.get(id).getBounds())) {
 				return true;
 			}
 			

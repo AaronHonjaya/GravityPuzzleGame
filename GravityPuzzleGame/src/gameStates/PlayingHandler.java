@@ -150,9 +150,6 @@ public class PlayingHandler implements Handler{
 					player.setX(tempX.getX() + tempX.getHeight());
 				}
 				
-				if(CollisionFunctions.isPlayerOnFloor(tempX, players, level.getSolidTile())) {
-					tempX.setInAir(false);
-				}
 				
 					
 			}
@@ -185,10 +182,7 @@ public class PlayingHandler implements Handler{
 					tempY.setY(CollisionFunctions.getYPosNextToFloorOrRoof(tempY));
 					player.setY(tempY.getY() + tempY.getHeight());
 				}
-				if(CollisionFunctions.isPlayerOnFloor(tempY, players, level.getSolidTile())) {
-					tempY.setInAir(false);
-				}
-					
+			
 			}
 		}
 				
@@ -199,10 +193,11 @@ public class PlayingHandler implements Handler{
 	public void tick() {	
 		for(UUID playerID : players.keySet() ) {
 			Player currPlayer = players.get(playerID);
+			
 			if(!CollisionFunctions.isPlayerOnFloor(currPlayer, players, level.getSolidTile())) {
+
 				currPlayer.setInAir(true);
 			}
-			
 			updatePlayerPos(currPlayer);
 		
 		
@@ -212,13 +207,7 @@ public class PlayingHandler implements Handler{
 					continue;
 				}					
 				GameObject tempObject = allObjects.get(objectID);
-				if(!ObjectType.isPlayer(tempObject))
-					tempObject.update();
-			
-				if(tempObject.getID() != currPlayer.getID() && players.containsKey(tempObject.getID())){
-					//checkPlayerCollision(currPlayer, players.get(tempObject.getID()));
-				}
-				else if(ObjectType.isFlag(tempObject)) {
+				if(ObjectType.isFlag(tempObject)) {
 					checkFlagCollision(currPlayer, (Flag) tempObject);
 				}
 				
@@ -430,7 +419,6 @@ public class PlayingHandler implements Handler{
 							tempPlayer.setVelX(-5);
 							break;
 						case KeyEvent.VK_UP:
-							System.out.println(tempPlayer.isInAir());
 							if(!tempPlayer.isJumping() && !tempPlayer.isInAir()) {
 								
 								tempPlayer.setJumping(true);
@@ -449,9 +437,7 @@ public class PlayingHandler implements Handler{
 							tempPlayer.setVelY(-5);
 							break;
 						case KeyEvent.VK_SPACE:
-						
 							if(!tempPlayer.isJumping() && !tempPlayer.isInAir()) {
-								System.out.println("jumped");
 								tempPlayer.setJumping(true);
 								tempPlayer.setInAir(true);
 								tempPlayer.setVelX(-10);

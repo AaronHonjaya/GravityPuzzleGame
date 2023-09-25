@@ -100,7 +100,7 @@ public class Player extends MovingObject{
 		Graphics2D g2d = (Graphics2D) g;
 		g.setColor(Color.green);
 		
-		g2d.draw(getBoundsBottom());
+		//g2d.draw(getBoundsBottom());
 		g2d.draw(getBounds());
 		
 		
