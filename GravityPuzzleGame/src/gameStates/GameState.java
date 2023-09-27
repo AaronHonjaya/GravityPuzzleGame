@@ -3,8 +3,8 @@ package gameStates;
 public enum GameState {
 	MENU,
 	PLAYING,
-	LEVELS,
-	QUIT;	
+	LEVEL_SELECT,
+	EXIT;	
 	
 	public static GameState state = PLAYING;
 }

@@ -8,12 +8,15 @@ import com.aaron.honjaya.framework.*;
 import com.aaron.honjaya.objects.Tile;
 import com.aaron.honjaya.objects.Flag;
 import com.aaron.honjaya.objects.Player;
+import com.aaron.honjaya.utils.Constants;
 import com.aaron.honjaya.utils.SpriteLoader;
 
 import gameMain.Game;
 import gameStates.PlayingHandler;
 
 public class LevelManager{
+	
+	
 	
 	private HashMap<UUID, GameObject> levelObjects;
 	
@@ -23,19 +26,42 @@ public class LevelManager{
 	private int numPlayersFinished;
 	private boolean levelFinished;
 	private boolean[][] solidTile;
+	private int currLevel;
+	
+	public static final int NUM_LEVELS = 2;
+	public static final int NUM_COLUMNS = 10;
+	private static final int LEVEL_SHEET_WIDTH = Game.WIDTH_IN_TILES;
+	private static final int LEVEL_SHEET_HEIGHT = Game.HEIGHT_IN_TILES;
+
 
 	
+
+
+
 	public LevelManager(PlayingHandler playingHandler) {
 		levelObjects = new HashMap<>();
+		currLevel = 0;
 		this.playingHandler = playingHandler;
-		
-		SpriteLoader sl = new SpriteLoader("/sprite_sheet.png");
-		levels.add(sl.loadImage("/testLevel.png"));
-		numPlayers = 0;
-		numPlayersFinished = 0;
+		loadLevelImages();
 	}
 	
 	
+	private void loadLevelImages() {
+		SpriteLoader sl = new SpriteLoader(Constants.LEVEL_SHEET);
+		BufferedImage image = sl.getImage();
+		int row = 0;
+		
+		while(levels.size() < NUM_LEVELS) {
+	
+			for(int col = 0; col < NUM_COLUMNS; col++) {
+				levels.add(image.getSubimage(col*LEVEL_SHEET_WIDTH, 
+						row*LEVEL_SHEET_HEIGHT, LEVEL_SHEET_WIDTH, LEVEL_SHEET_HEIGHT));
+			}
+			row++;
+		}
+	}
+
+
 	public void render(Graphics g) {
 		for(UUID objectId : levelObjects.keySet()) {
 			levelObjects.get(objectId).render(g);
@@ -57,9 +83,6 @@ public class LevelManager{
 	}
 
 
-	public PlayingHandler getPlayingHandler() {
-		return playingHandler;
-	}
 
 
 	public ArrayList<BufferedImage> getLevels() {
@@ -72,14 +95,26 @@ public class LevelManager{
 	}
 
 
-	public void loadLevel(int lvlNum) {
-		BufferedImage image = levels.get(lvlNum);
+	public void loadLevel() {
+		playingHandler.removeAll();
+		levelObjects.clear();
+		numPlayers = 0;
+		numPlayersFinished = 0;
+		
+		BufferedImage image = null;
+		
+		try {
+			image = levels.get(currLevel);
+		}catch(Exception e) {
+			currLevel = 0;
+			image = levels.get(currLevel);
+		}
 		levelFinished = false;
 		solidTile = new boolean[Game.HEIGHT_IN_TILES][Game.WIDTH_IN_TILES];
 		
 		for(int xx = 0; xx < Game.WIDTH_IN_TILES; xx++) {
 			for(int yy = 0; yy < Game.HEIGHT_IN_TILES; yy++) {
-				int pixel = image.getRGB(xx + (lvlNum*Game.WIDTH_IN_TILES), yy + (lvlNum*Game.WIDTH_IN_TILES));
+				int pixel = image.getRGB(xx, yy);
 				int red = (pixel >> 16) & 0xff;
 				int green = (pixel >> 8) & 0xff;
 				int blue = (pixel) & 0xff;
@@ -110,7 +145,7 @@ public class LevelManager{
 				}
 			}
 		}
-		System.out.println(numPlayers + ", " + numPlayersFinished);
+		//System.out.println(numPlayers + ", " + numPlayersFinished);
 	}
 
 
@@ -124,6 +159,15 @@ public class LevelManager{
 
 	public void increaseNumPlayersFinished() {
 		this.numPlayersFinished++;
+	}
+	
+	public int getCurrLevel() {
+		return currLevel;
+	}
+
+
+	public void setCurrLevel(int currLevel) {
+		this.currLevel = currLevel;
 	}
 	
 }

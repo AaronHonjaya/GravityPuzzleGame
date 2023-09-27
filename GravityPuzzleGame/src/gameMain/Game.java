@@ -18,6 +18,7 @@ import com.aaron.honjaya.objects.Player;
 
 
 import gameStates.GameState;
+import gameStates.LevelSelectHandler;
 import gameStates.MenuHandler;
 import gameStates.PlayingHandler;
 
@@ -36,6 +37,7 @@ public class Game extends Canvas implements Runnable{
 	public static final int WIDTH = TILE_SIZE * WIDTH_IN_TILES; 
 	public static final int HEIGHT = TILE_SIZE * HEIGHT_IN_TILES; 
 	
+	
 	public final String TITLE = "Puzzle Game";
 
 	
@@ -44,9 +46,9 @@ public class Game extends Canvas implements Runnable{
 	
 	private BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
 	
-	//private Handler handler;
 	private PlayingHandler playingHandler;
 	private MenuHandler menuHandler;
+	private LevelSelectHandler levelSelectHandler;
 	
 	public void init(){
 		
@@ -54,11 +56,13 @@ public class Game extends Canvas implements Runnable{
 		
 		playingHandler = new PlayingHandler();
 		
-		
 		menuHandler = new MenuHandler();
+		levelSelectHandler = new LevelSelectHandler(playingHandler.getLevelManager());
 		
 		addKeyListener(new KeyInput(this));
-		addMouseListener(new MouseInput(this));
+		MouseInput mouseInput = new MouseInput(this);
+		addMouseListener(mouseInput);
+		addMouseMotionListener(mouseInput);
 	}
 	
 
@@ -126,6 +130,11 @@ public class Game extends Canvas implements Runnable{
 			case PLAYING:
 				playingHandler.tick();
 				break;
+			case LEVEL_SELECT: 
+				levelSelectHandler.tick();
+				break;
+			case EXIT:
+				System.exit(1);
 			default:
 				break;
 					
@@ -153,6 +162,8 @@ public class Game extends Canvas implements Runnable{
 			case PLAYING:
 				playingHandler.render(g);
 				break;
+			case LEVEL_SELECT: 
+				levelSelectHandler.render(g);
 			default:
 				break;
 				
@@ -180,16 +191,12 @@ public class Game extends Canvas implements Runnable{
 		return playingHandler;
 	}
 
-	public void setPlayingHandler(PlayingHandler playingHandler) {
-		this.playingHandler = playingHandler;
-	}
-
 	public MenuHandler getMenuHandler() {
 		return menuHandler;
 	}
 
-	public void setMenuHandler(MenuHandler menuHandler) {
-		this.menuHandler = menuHandler;
+	public LevelSelectHandler getLevelSelectHandler() {
+		return levelSelectHandler;
 	}
 
 

@@ -4,7 +4,7 @@ import java.awt.Dimension;
 
 import javax.swing.JFrame;
 
-public class Window {
+public class Window extends JFrame{
 	
 	
 	public Window(int w, int h, String title, Game game) {
@@ -12,13 +12,13 @@ public class Window {
 		game.setMaximumSize(new Dimension(w, h));
 		game.setMinimumSize(new Dimension(w, h));
 		
-		JFrame frame = new JFrame(title);
-		frame.add(game);
-		frame.pack();
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setResizable(false);
-		frame.setLocationRelativeTo(null);
-		frame.setVisible(true);
+		this.setTitle(title);
+		this.add(game);
+		this.pack();
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setResizable(false);
+		this.setLocationRelativeTo(null);
+		this.setVisible(true);
 	
 		
 		game.start();

@@ -24,27 +24,28 @@ public class PlayingHandler implements Handler{
 	private BufferedImage spriteSheet = null;
 	private BufferedImage image = null; 
 	private boolean levelIsFinished; 
+	private HashMap<UUID, GameObject> allObjects = new HashMap<>();
+	private HashMap<UUID, Player> players = new HashMap<>();
+	private LevelManager levelManager;
 	
-	public HashMap<UUID, GameObject> allObjects = new HashMap<>();
-	public HashMap<UUID, Player> players = new HashMap<>();
-	private LevelManager level;
+	
 	
 	public PlayingHandler() {
-		level = new LevelManager(this);
-		level.loadLevel(0);
+		levelManager = new LevelManager(this);
+		levelManager.loadLevel();
 	}
 	
 	public void render(Graphics g) {
 		for(UUID id : allObjects.keySet()) {
 			GameObject tempObject = allObjects.get(id);
 			tempObject.render(g);
-			level.render(g);
+			levelManager.render(g);
 		}
 	}
 	
 	private void movePlayerHorizontally(Player player) {
 		ObjectType type = player.getType();
-		if(CollisionFunctions.canMove(player, level.getSolidTile(), true, false)) {
+		if(CollisionFunctions.canMove(player, levelManager.getSolidTile(), true, false)) {
 			player.updateXPos();
 			if(player.isInAir() && (type == ObjectType.PLAYER_R || type == ObjectType.PLAYER_L)) {
 				player.updateGrav();
@@ -73,7 +74,7 @@ public class PlayingHandler implements Handler{
 	private void movePlayerVertically(Player player) {
 		ObjectType type = player.getType();
 
-		if(CollisionFunctions.canMove(player, level.getSolidTile(), false, true)) {
+		if(CollisionFunctions.canMove(player, levelManager.getSolidTile(), false, true)) {
 			player.updateYPos();
 			if(player.isInAir() && (type == ObjectType.PLAYER_D || type == ObjectType.PLAYER_U)) {
 				player.updateGrav();
@@ -139,7 +140,7 @@ public class PlayingHandler implements Handler{
 				double tempFutureX = player.getX()+player.getVelX()-tempX.getWidth();
 				
 				if(CollisionFunctions.canSetHere(tempFutureX, tempX.getY(),  
-						tempX.getWidth(), tempX.getHeight(), level.getSolidTile()))
+						tempX.getWidth(), tempX.getHeight(), levelManager.getSolidTile()))
 				{
 					movePlayerHorizontally(player);
 					tempX.setX(tempFutureX);
@@ -172,7 +173,7 @@ public class PlayingHandler implements Handler{
 				double tempFutureY = player.getY()+player.getVelY()-tempY.getHeight();
 				
 				if(CollisionFunctions.canSetHere(tempY.getX(), tempFutureY, 
-						tempY.getWidth(), tempY.getHeight(), level.getSolidTile()))
+						tempY.getWidth(), tempY.getHeight(), levelManager.getSolidTile()))
 				{
 					movePlayerVertically(player);
 					tempY.setY(tempFutureY);
@@ -188,13 +189,12 @@ public class PlayingHandler implements Handler{
 				
 	}
 	
-	public static int i = 0;
 
 	public void tick() {	
 		for(UUID playerID : players.keySet() ) {
 			Player currPlayer = players.get(playerID);
 			
-			if(!CollisionFunctions.isPlayerOnFloor(currPlayer, players, level.getSolidTile())) {
+			if(!CollisionFunctions.isPlayerOnFloor(currPlayer, players, levelManager.getSolidTile())) {
 
 				currPlayer.setInAir(true);
 			}
@@ -215,82 +215,16 @@ public class PlayingHandler implements Handler{
 			
 		}
 		
-		if(level.isLevelFinished()) {
-			allObjects.clear();
-			players.clear();
-			level.loadLevel(0);
+		if(levelManager.isLevelFinished()) {
+			levelManager.setCurrLevel(levelManager.getCurrLevel()+1);
+			levelManager.loadLevel();
 		}
 	}
 
 	
-	
-	
-	
-	/*
-	
-	private void checkBlockCollision(Player player, GameObject obj) {
-			switch(player.getType()) {
-				case PLAYER_D: 
-					if(player.getBoundsBottom().intersects(obj.getBounds())) {
-						player.setY(obj.getY() - player.getHeight());
-						player.setVelY(0);
-						player.setFalling(false);
-						player.setJumping(false);
-					}else{
-						player.setFalling(true);
-					}
-					if(player.getBoundsTop().intersects(obj.getBounds())) { 
-						player.setY(obj.getY() + player.getHeight());
-						player.setVelY(0);
-						System.out.println("red top touched");
-					}
-					if(player.getBoundsRight().intersects(obj.getBounds())) {
-						player.setX(obj.getX() - player.getWidth());
-					}
-					if(player.getBoundsLeft().intersects(obj.getBounds())) {
-						player.setX(obj.getX() + player.getWidth());
-					}
-					break;
-				case PLAYER_L: 
-					
-					break;
-				case PLAYER_U: 
-					
-					break;
-				case PLAYER_R: 
-					if(player.getBoundsRight().intersects(obj.getBounds())) {
-						player.setX(obj.getX() - player.getWidth());
-						player.setVelX(0);
-						player.setFalling(false);
-						player.setJumping(false);
-						//System.out.println("test B");
-
-					}else{
-						player.setFalling(true);
-					}
-					if(player.getBoundsLeft().intersects(obj.getBounds())) {
-						player.setX(obj.getX() + player.getWidth());
-						player.setVelX(0);
-						//System.out.println("test L");
-					}
-					if(player.getBoundsBottom().intersects(obj.getBounds())) {
-						player.setY(obj.getY() - player.getHeight());
-						
-					}
-					if(player.getBoundsTop().intersects(obj.getBounds())) {
-						player.setY(obj.getY() + player.getHeight());
-						//System.out.println("test T");
-						
-					}
-					break;
-			}
-	}		
-	*/
-	
-	
 	private void checkFlagCollision(Player player, Flag flag) {
 		if(!player.hasReachedFlag() && ObjectType.reachedFlag(flag, player) && player.getBoundsBottom().intersects(flag.getBounds())) {
-			level.increaseNumPlayersFinished();
+			levelManager.increaseNumPlayersFinished();
 			player.setReachedFlag(true);
 		}
 			
@@ -512,6 +446,16 @@ public class PlayingHandler implements Handler{
 	public void removePlayer(UUID id) {
 		players.remove(id);
 	}
+	
+	public void removeAll() {
+		this.allObjects.clear();
+		this.players.clear();
+	}
+	
+	public LevelManager getLevelManager() {
+		return this.levelManager;
+	}
+	
 	
 	
 	

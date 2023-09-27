@@ -68,7 +68,7 @@ public class Player extends MovingObject{
 
 
 	private void loadImages() {
-		ss = new SpriteLoader(Constants.smallerSpriteSheet);
+		ss = new SpriteLoader(Constants.SPRITE_SHEET);
 		int col = 0;
 		switch(type) {
 			case PLAYER_D: 

@@ -5,6 +5,7 @@ import java.awt.event.MouseEvent;
 
 import gameMain.Game;
 import gameStates.GameState;
+import gameStates.LevelSelectHandler;
 import gameStates.MenuHandler;
 import gameStates.PlayingHandler;
 
@@ -13,12 +14,14 @@ public class MouseInput extends MouseAdapter{
 	Game game;	
 	private PlayingHandler playingHandler;
 	private MenuHandler menuHandler;
+	private LevelSelectHandler levelSelectHandler;
 
 	
 	public MouseInput(Game game) {
 		this.game = game;
 		playingHandler = this.game.getPlayingHandler(); 
 		menuHandler = this.game.getMenuHandler(); 
+		levelSelectHandler = this.game.getLevelSelectHandler(); 
 	}
 	
 	@Override
@@ -29,6 +32,9 @@ public class MouseInput extends MouseAdapter{
 				break;
 			case PLAYING:
 				playingHandler.mouseClicked(e);
+				break;
+			case LEVEL_SELECT:
+				levelSelectHandler.mouseClicked(e);
 				break;
 			default:
 				break;
@@ -44,6 +50,9 @@ public class MouseInput extends MouseAdapter{
 				break;
 			case PLAYING:
 				playingHandler.mousePressed(e);
+				break;
+			case LEVEL_SELECT:
+				levelSelectHandler.mousePressed(e);
 				break;
 			default:
 				break;
@@ -61,6 +70,9 @@ public class MouseInput extends MouseAdapter{
 			case PLAYING:
 				playingHandler.mouseReleased(e);
 				break;
+			case LEVEL_SELECT:
+				levelSelectHandler.mouseReleased(e);
+				break;
 			default:
 				break;
 			
@@ -76,6 +88,9 @@ public class MouseInput extends MouseAdapter{
 				break;
 			case PLAYING:
 				playingHandler.mouseMoved(e);
+				break;
+			case LEVEL_SELECT:
+				levelSelectHandler.mouseMoved(e);
 				break;
 			default:
 				break;

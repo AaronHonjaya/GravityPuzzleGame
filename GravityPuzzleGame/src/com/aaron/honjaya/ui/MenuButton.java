@@ -14,38 +14,41 @@ import com.aaron.honjaya.utils.SpriteLoader;
 
 import gameStates.GameState;
 
-public class MenuButton {
+public class MenuButton extends Button{
 	
-	private double x, y;
 	private int rowIndex, imgIndex;
 	private int xOffsetCenter = SpriteLoader.BUTTON_WIDTH / 2;
-	private GameState state;
 	private BufferedImage[] images;
-	private boolean mouseOver, mousePressed;
+	
+	
+
 	
 	public MenuButton(double x, double y, int rowIndex, GameState state) {
-		this.x = x;
-		this.y = y;
+		super(x,y,state);
 		this.rowIndex = rowIndex;
-		this.state = state;
 		loadImages();
+		width = images[0].getWidth();
+		height = images[0].getHeight();
 	}
 	
 	private void loadImages() {
-		SpriteLoader sl = new SpriteLoader(Constants.buttonSheet);
+		SpriteLoader sl = new SpriteLoader(Constants.BUTTON_SHEET);
 		images = new BufferedImage[3];
 		for(int i = 0; i < images.length; i++) {
 			images[i] = sl.grabButtonImage(i, rowIndex);
 		}
+		
 	}
 
 	
 	public void tick() {
-		imgIndex = 0;
-		if(mouseOver)
+		if(mouseOver) {
 			imgIndex = 1;
-		if(mousePressed)
+		}
+		else if(mousePressed)
 			imgIndex = 2;
+		else
+			imgIndex = 0;
 	}
 	
 
@@ -57,36 +60,11 @@ public class MenuButton {
 		g2d.draw(getBounds());
 	}
 	
-	public void applyGameState() {
-		GameState.state = state;
-	}
-	
-	public void resetBools() {
-		mouseOver = false;
-		mousePressed = false;
-	}
-
-
-	public boolean isMouseOver() {
-		return mouseOver;
-	}
-
-	public void setMouseOver(boolean mouseOver) {
-		this.mouseOver = mouseOver;
-	}
-
-	public boolean isMousePressed() {
-		return mousePressed;
-	}
-
-	public void setMousePressed(boolean mousePressed) {
-		this.mousePressed = mousePressed;
-	}
-
 	
 	public Rectangle getBounds() {
 		return (new Rectangle((int)(x-xOffsetCenter), (int)y, Constants.BUTTON_WIDTH, Constants.BUTTON_HEIGHT));
 	}
+
 	
 	
 	

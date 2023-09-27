@@ -4,18 +4,22 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import java.util.LinkedList;
+import java.util.*;
 
 import com.aaron.honjaya.framework.GameObject;
 import com.aaron.honjaya.framework.ObjectType;
+import com.aaron.honjaya.ui.Button;
 import com.aaron.honjaya.ui.MenuButton;
 
 import gameMain.Game;
 
 public class MenuHandler implements Handler{
+	private static final int PLAY = 1;
+	private static final int LEVELS = 2;
+	private static final int EXIT = 3;
+
 	
-	public LinkedList<MenuButton> buttons = new LinkedList<>();
-	private MenuButton tempButton;
+	protected ArrayList<Button> buttons = new ArrayList<>();
 	
 	
 	public MenuHandler() {
@@ -23,30 +27,28 @@ public class MenuHandler implements Handler{
 	}
 	
 	private void loadButtons() {
-		buttons.add(new MenuButton(Game.WIDTH/2	, 0, 0, GameState.PLAYING));
-		buttons.add(new MenuButton(Game.WIDTH/2	, 300, 1, GameState.LEVELS));
-		buttons.add(new MenuButton(Game.WIDTH/2	, 500, 2, GameState.QUIT));
+		buttons.add(new MenuButton(Game.WIDTH/2	, 100, 0, GameState.PLAYING));
+		buttons.add(new MenuButton(Game.WIDTH/2	, 250, 1, GameState.LEVEL_SELECT));
+		buttons.add(new MenuButton(Game.WIDTH/2	, 400, 2, GameState.EXIT));
 	}
 
 	
 	public void tick() {
-		for(int i = 0; i < buttons.size(); i++) {
-			tempButton = buttons.get(i);
-			tempButton.tick();
+		for(Button button : buttons) {
+			button.tick();
 		}
 	}
 
 	@Override
 	public void render(Graphics g) {
-		for(int i = 0; i < buttons.size(); i++) {
-			tempButton = buttons.get(i);
-			tempButton.render(g);
+		for(Button button : buttons) {
+			button.render(g);
 		}
 	}
 
 	
-	private boolean isIn(MouseEvent e, MenuButton mb) {
-		return mb.getBounds().contains(e.getX(), e.getY());
+	protected boolean isIn(MouseEvent e, Button button) {
+		return button.getBounds().contains(e.getX(), e.getY());
 	}
 	
 	@Override
@@ -57,24 +59,39 @@ public class MenuHandler implements Handler{
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		for(MenuButton mb : buttons) {
-			if(isIn(e, mb)) {
-				mb.setMousePressed(true);
+		for(Button menuButton : buttons) {
+			if(isIn(e, menuButton)) {
+				menuButton.setMousePressed(true);
+				break;
 			}
 		}
-		
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
+		for(Button menuButton : buttons) {
+			if(isIn(e, menuButton) && menuButton.isMousePressed()) {
+				menuButton.applyGameState();
+				break;
+			}
+		}
+		
+		resetButtons();
 		
 	}
+	
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		// TODO Auto-generated method stub
+		for(Button menuButton : buttons) {
+			menuButton.setMouseOver(false);
+		}
 		
+		for(Button menuButton : buttons) {
+			if(isIn(e, menuButton)) {
+				menuButton.setMouseOver(true);
+			}
+		}
 	}
 
 	@Override
@@ -89,10 +106,14 @@ public class MenuHandler implements Handler{
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		// TODO Auto-generated method stub
 		
 	}
 
 
+	protected void resetButtons() {
+		for(Button menuButton : buttons) {
+			menuButton.resetBools();
+		}
+	}
 	
 }
