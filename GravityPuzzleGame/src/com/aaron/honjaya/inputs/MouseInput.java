@@ -9,6 +9,8 @@ import gameStates.LevelSelectHandler;
 import gameStates.MenuHandler;
 import gameStates.PlayingHandler;
 
+//adapted from https://youtu.be/2mhDRjnv4WI?si=VXWiE--mdG4DdKVy
+
 public class MouseInput extends MouseAdapter{
 	
 	Game game;	

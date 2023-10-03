@@ -35,11 +35,6 @@ public class Player extends MovingObject{
 	private double futureX, futureY;
 	private boolean inAir;
 	
-
-	
-	
-
-	
 	public boolean isInAir() {
 		return inAir;
 	}
@@ -61,34 +56,11 @@ public class Player extends MovingObject{
 		loadImages();
 		this.width = images[0].getWidth(); 
 		this.height = images[0].getHeight();
-		
-	
 	}
 	
-
-
-	private void loadImages() {
-		ss = new SpriteLoader(Constants.SPRITE_SHEET);
-		int col = 0;
-		switch(type) {
-			case PLAYER_D: 
-				col = 0;
-				break;
-			case PLAYER_L: 
-				col = 1;
-				break;
-			case PLAYER_U: 
-				col = 2;
-				break;
-			case PLAYER_R: 
-				col = 3;
-				break;
-		}
-		images = new BufferedImage[2];
-		for(int i = 0; i < 2; i++) {
-			images[i] = ss.grabSpriteImage(col, i);
-		}
-		imgIndex = 0;
+	@Override 
+	public void tick() {
+		checkDirection();
 	}
 	
 	
@@ -117,189 +89,11 @@ public class Player extends MovingObject{
 		y += velY;
 	}
 	
-	@Override 
-	public void update() {
-		
-	}
-
 	
-	/*
-	private void Collision(LinkedList<GameObject> objects) {
-		for(int i = 0; i < objects.size(); i++) {
-			
-			GameObject temp = objects.get(i);
-			
-			if(temp.getType() == ObjectType.BLOCK) {
-				//checkBlockCollision(temp);
-			}
-			else if(temp.getType() == ObjectType.PLAYER_D) {
-				checkPlayerDCollision(temp);
-			}
-			else if(temp.getType() == ObjectType.PLAYER_R) {
-				checkPlayerRCollision(temp);
-			}
-			else if( !reachedFlag) {
-				if((temp.getType() == ObjectType.FLAG_R && this.type == ObjectType.PLAYER_R)
-					|| (temp.getType() == ObjectType.FLAG_D && this.type == ObjectType.PLAYER_D)
-					|| (temp.getType() == ObjectType.FLAG_U && this.type == ObjectType.PLAYER_U)
-					|| (temp.getType() == ObjectType.FLAG_L && this.type == ObjectType.PLAYER_L)) {
-						if(getBounds().intersects(temp.getBounds())) {
-							reachedFlag = true;
-							//handler.increaseNumPlayersFinished();
-						}
-				}
-			}
-		}
-	}
+
 	
 
 
-
-
-	private void checkPlayerDCollision(GameObject pD) {
-		
-		if(type == ObjectType.PLAYER_L) {
-			
-			
-			
-		}else if(type == ObjectType.PLAYER_U) {
-			
-			
-			
-		}else if(type == ObjectType.PLAYER_R) {
-			
-			if(getBounds().intersects(pD.getBoundsTop())) {
-				y = pD.getY() - height;
-				
-			}
-			if(getBoundsRight().intersects(pD.getBoundsLeft())) {
-				x = pD.getX()-width;
-				velX = pD.getVelX();
-				falling = false;
-				jumping = false;
-			}
-			if(getBoundsLeft().intersects(pD.getBoundsRight())) {
-				x = pD.getX()+width+5;
-				
-			}
-			if(pD.getVelY() == 0 && getBoundsTop().intersects(pD.getBounds())) {
-				y = pD.getY()+height;
-			}
-			
-		}
-	}
-	private void checkPlayerRCollision(GameObject pR) {
-		if(type == ObjectType.PLAYER_D) {
-			if(getBounds().intersects(pR.getBoundsTop())) {
-				y = pR.getY() - height;
-				velY = pR.getVelY();
-				falling = false;
-				jumping = false;
-			}
-			if(getBoundsRight().intersects(pR.getBoundsLeft())) {
-				velX = 0;
-				x = pR.getX()-width;
-			}
-			if(getBoundsTop().intersects(pR.getBounds())) {
-				y = pR.getY()+height;
-			}
-			if(pR.getVelX() == 0 && getBoundsLeft().intersects(pR.getBoundsRight())) {
-				x = pR.getX()+width;
-			}
-			
-		}else if(type == ObjectType.PLAYER_L) {
-			
-			
-			
-		}else if(type == ObjectType.PLAYER_U) {
-			
-			
-		}
-	}
-
-	
-	private void checkBlockCollision(GameObject block) {
-		switch(type) {
-			case PLAYER_D: 
-				if(getBounds().intersects(block.getBounds())) {
-					y = block.getY() - height;
-					velY = 0;
-					falling = false;
-					jumping = false;
-				}else if(type == ObjectType.PLAYER_D){
-					falling = true;
-				}
-				if(getBoundsTop().intersects(block.getBounds())) { 
-					y = block.getY() + height;
-					velY = 0;
-				}
-				if(getBoundsRight().intersects(block.getBounds())) {
-					x = block.getX()-width;
-				}
-				if(getBoundsLeft().intersects(block.getBounds())) {
-					x = block.getX()+width;
-				}
-				break;
-			case PLAYER_L: 
-				
-				break;
-			case PLAYER_U: 
-				
-				break;
-			case PLAYER_R: 
-				if(getBoundsRight().intersects(block.getBounds())) {
-					x = block.getX() - width;
-					velX = 0;
-					falling = false;
-					jumping = false;
-				}else if(type == ObjectType.PLAYER_R) {
-					falling = true;
-				}	
-				
-				if(getBoundsLeft().intersects(block.getBounds())) {
-					x = block.getX() + width;
-					velX = 0;
-					
-				}
-				if(getBounds().intersects(block.getBounds())) {
-					y = block.getY()-height;
-					break;
-				}
-
-				if(getBoundsTop().intersects(block.getBounds())) {
-					y = block.getY()+height;					
-				}
-				
-				
-		}
-			
-		//end of switch
-		
-	}
-	*/
-	
-
-	public double getFutureX() {
-		return futureX;
-	}
-
-
-
-	public void setFutureX(double futureX) {
-		this.futureX = futureX;
-	}
-
-
-
-	public double getFutureY() {
-		return futureY;
-	}
-
-
-
-	public void setFutureY(double futureY) {
-		this.futureY = futureY;
-	}
 
 
 
@@ -358,6 +152,30 @@ public class Player extends MovingObject{
 		}
 	}
 
+	
+	private void loadImages() {
+		ss = new SpriteLoader(Constants.SPRITE_SHEET);
+		int col = 0;
+		switch(type) {
+			case PLAYER_D: 
+				col = 0;
+				break;
+			case PLAYER_L: 
+				col = 1;
+				break;
+			case PLAYER_U: 
+				col = 2;
+				break;
+			case PLAYER_R: 
+				col = 3;
+				break;
+		}
+		images = new BufferedImage[2];
+		for(int i = 0; i < 2; i++) {
+			images[i] = ss.grabSpriteImage(col, i);
+		}
+		imgIndex = 0;
+	}
 	
 	
 

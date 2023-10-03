@@ -10,10 +10,12 @@ import java.util.*;
 import gameMain.Game;
 import gameStates.PlayingHandler;
 
+
+
 public class CollisionFunctions {
 
 	
-
+//adapted from https://youtu.be/PrAmaeQF4f0?si=uvMySN1JfSCGasHo
 	public static boolean canMove(Player player, boolean[][] solidTile, boolean checkX, boolean checkY) {
 		double futureX = player.getX();
 		double futureY = player.getY();
@@ -32,6 +34,8 @@ public class CollisionFunctions {
 		return false;
 	}
 	
+	
+	
 	public static boolean canSetHere(double futureX, double futureY, double width, double height, boolean[][] solidTile) {	
 		if(!isSolid(futureX, futureY, solidTile) &&
 		   !isSolid(futureX+ width, futureY, solidTile) &&
@@ -44,22 +48,23 @@ public class CollisionFunctions {
 	}
 	
 	
+	
+	//Credit to https://youtu.be/PrAmaeQF4f0?si=uvMySN1JfSCGasHo
 	public static double getXPosNextToWall(Player player){
 		int currTile = Math.round((float)player.getX() / Game.TILE_SIZE);
 		
 		if(player.getVelX() > 0) {
-			// Right collision
 		
 			int tileXPos = currTile * Game.TILE_SIZE;
 			int xOffset = (int)(Game.TILE_SIZE - player.getWidth());
 			return tileXPos + xOffset - 1;
 		}else {
-			// left collision
 			return currTile*Game.TILE_SIZE;
 			
 		}
 	}
 	
+	//Credit to https://youtu.be/PrAmaeQF4f0?si=uvMySN1JfSCGasHo
 	public static double getYPosNextToFloorOrRoof(Player player){
 		int currTile = Math.round((float)player.getY() / Game.TILE_SIZE);
 		
@@ -71,12 +76,11 @@ public class CollisionFunctions {
 		}else {
 			// jumping - hitting head
 			return currTile*Game.TILE_SIZE;
-			
 		}
 	}
 
 	
-	
+	//adapted from https://youtu.be/PrAmaeQF4f0?si=uvMySN1JfSCGasHo
 	private static boolean isSolid(double x, double y, boolean[][] solidTile) {
 		double xIndex = x / Game.TILE_SIZE;
 		double yIndex = y / Game.TILE_SIZE;
@@ -86,6 +90,9 @@ public class CollisionFunctions {
 		
 		return solidTile[(int)yIndex][(int)xIndex];
 	}
+	
+	
+	
 	
 	public static boolean playerIsInPath(Player player, Player otherPlayer, boolean checkX, boolean checkY) {
 		double futureX = player.getX();
@@ -100,6 +107,8 @@ public class CollisionFunctions {
 		return futureHitbox.intersects(otherPlayer.getBounds());
 	}
 	
+	
+	//adapted from https://youtu.be/Hles6ghAdiY?si=2xrahJR8amXP6RPF
 	public static boolean isPlayerOnFloor(Player player, HashMap<UUID, Player> playerList, boolean solidTile[][]) {
 		switch(player.getType()) {
 			case PLAYER_D:

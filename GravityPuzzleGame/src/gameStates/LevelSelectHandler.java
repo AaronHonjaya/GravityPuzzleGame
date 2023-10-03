@@ -89,7 +89,7 @@ public class LevelSelectHandler extends MenuHandler implements Handler {
 		
 		for(int i = 0; i < buttons.size(); i++) {
 			Button lvlButton = buttons.get(i);
-			if(isIn(e, lvlButton) && lvlButton.isMousePressed()) {
+			if(mouseIsIn(e, lvlButton) && lvlButton.isMousePressed()) {
 				levelManager.setCurrLevel(i);
 				levelManager.loadLevel();
 				lvlButton.applyGameState();

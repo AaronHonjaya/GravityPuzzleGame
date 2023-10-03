@@ -16,6 +16,11 @@ import com.aaron.honjaya.utils.SpriteLoader;
 
 import gameStates.GameState;
 
+//Adapted from https://youtu.be/zGrLCHROa4s?si=ZuTVxIi-uoDQMvUC
+
+//Heavily Modified by Aaron Honjaya - University of Washington
+
+
 public class MenuButton extends Button{
 	
 	protected Rectangle bounds;

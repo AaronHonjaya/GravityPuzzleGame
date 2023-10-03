@@ -43,8 +43,7 @@ public class PlayingHandler implements Handler{
 	}
 	
 	
-	public void tick() {	
-		
+	public void tick() {
 		for(UUID playerID : players.keySet() ) {
 			Player currPlayer = players.get(playerID);
 			if(!CollisionFunctions.isPlayerOnFloor(currPlayer, players, levelManager.getSolidTile())) {

@@ -13,10 +13,11 @@ import com.aaron.honjaya.ui.MenuButton;
 
 import gameMain.Game;
 
+//adapted from //youtu.be/zGrLCHROa4s?si=ZuTVxIi-uoDQMvUC. 
+// Modified by Aaron Honjaya - University of Washington
+
+
 public class MenuHandler implements Handler{
-	private static final int PLAY = 1;
-	private static final int LEVELS = 2;
-	private static final int EXIT = 3;
 
 	
 	protected ArrayList<Button> buttons;
@@ -51,7 +52,7 @@ public class MenuHandler implements Handler{
 	}
 
 	
-	protected boolean isIn(MouseEvent e, Button button) {
+	protected boolean mouseIsIn(MouseEvent e, Button button) {
 		return button.getBounds().contains(e.getX(), e.getY());
 	}
 	
@@ -64,7 +65,7 @@ public class MenuHandler implements Handler{
 	@Override
 	public void mousePressed(MouseEvent e) {
 		for(Button menuButton : buttons) {
-			if(isIn(e, menuButton)) {
+			if(mouseIsIn(e, menuButton)) {
 				menuButton.setMousePressed(true);
 				break;
 			}
@@ -74,7 +75,7 @@ public class MenuHandler implements Handler{
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		for(Button menuButton : buttons) {
-			if(isIn(e, menuButton) && menuButton.isMousePressed()) {
+			if(mouseIsIn(e, menuButton) && menuButton.isMousePressed()) {
 				menuButton.applyGameState();
 				break;
 			}
@@ -92,7 +93,7 @@ public class MenuHandler implements Handler{
 		}
 		
 		for(Button menuButton : buttons) {
-			if(isIn(e, menuButton)) {
+			if(mouseIsIn(e, menuButton)) {
 				menuButton.setMouseOver(true);
 			}
 		}

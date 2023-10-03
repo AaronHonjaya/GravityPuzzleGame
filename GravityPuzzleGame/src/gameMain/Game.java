@@ -66,6 +66,7 @@ public class Game extends Canvas implements Runnable{
 	}
 	
 
+	//credit to https://youtu.be/Zh7YiiEuJFw?si=cKaJM3PAIy-QLsTz
 	public synchronized void start() {
 		if(running){
 			return;
@@ -75,6 +76,7 @@ public class Game extends Canvas implements Runnable{
 		thread.start();
 	}
 	
+	//credit to https://youtu.be/Zh7YiiEuJFw?si=cKaJM3PAIy-QLsTz
 	private synchronized void stop() {
 		if(!running){
 			return;
@@ -89,7 +91,7 @@ public class Game extends Canvas implements Runnable{
 		
 	}
 	
-	
+	//credit to https://youtu.be/Zh7YiiEuJFw?si=cKaJM3PAIy-QLsTz
 	public void run() {
 		init();
 		long lastTime = System.nanoTime();
@@ -123,6 +125,8 @@ public class Game extends Canvas implements Runnable{
 		stop();
 	}
 	
+	
+	
 	private void tick() {
 		switch(GameState.state) {
 			case MENU:
@@ -142,6 +146,8 @@ public class Game extends Canvas implements Runnable{
 			}
 	}
 	
+	
+	//adapted from https://youtu.be/Nn8LH6T3xuc?si=L0l2EqtFLivnAUeS
 	private void render(){
 		BufferStrategy bs = this.getBufferStrategy();
 			

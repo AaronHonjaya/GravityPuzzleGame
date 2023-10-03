@@ -4,9 +4,11 @@ import java.awt.Dimension;
 
 import javax.swing.JFrame;
 
+
+
+//credit to https://youtu.be/DXT11ZbB2Mk?si=oy_68MtT7aJGYCZQ
+
 public class Window extends JFrame{
-	
-	
 	public Window(int w, int h, String title, Game game) {
 		game.setPreferredSize(new Dimension(w, h));
 		game.setMaximumSize(new Dimension(w, h));
@@ -18,9 +20,7 @@ public class Window extends JFrame{
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setResizable(false);
 		this.setLocationRelativeTo(null);
-		this.setVisible(true);
-	
-		
+		this.setVisible(true);		
 		game.start();
 	}
 }

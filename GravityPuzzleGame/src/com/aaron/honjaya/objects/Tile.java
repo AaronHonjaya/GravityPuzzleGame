@@ -32,7 +32,7 @@ public class Tile extends GameObject{
 	}
 
 	@Override
-	public void update() {
+	public void tick() {
 		// TODO Auto-generated method stub
 		
 	}
