@@ -25,9 +25,11 @@ public class MenuButton extends Button{
 	
 	protected Rectangle bounds;
 	protected String str;
+	//colors for animation
 	protected final Color myLightGray = new Color(192, 192, 192);
 	protected final Color myDarkGray = new Color(160, 160, 160);
 	protected Color currColor;
+	
 	protected int fontSize;
 
 

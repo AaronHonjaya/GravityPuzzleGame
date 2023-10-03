@@ -36,10 +36,12 @@ public class LevelSelectHandler extends MenuHandler implements Handler {
 		while(buttons.size() < LevelManager.NUM_LEVELS) {
 			str = "LEVEL " + lvlNum;
 			
+			//previous button used for next button position
 			Button prevButton = buttons.get(lvlNum-2);
 			int nextX = (int)prevButton.getX() + Button.getWidth() + xOffset;
 			int nextY = (int)prevButton.getY();
 			
+			//starts a new line in case button goes off screen. 
 			if(nextX + Button.getWidth() + xOffset > Game.WIDTH) {
 				row++;
 				nextX = xOffset;

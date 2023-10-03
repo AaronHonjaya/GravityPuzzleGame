@@ -57,6 +57,8 @@ public class Flag extends GameObject{
 
 	@Override
 	public Rectangle getBounds() {
+		
+		//other flags will be added. 
 		switch(type) {				
 			case FLAG_R:
 				return new Rectangle((int)x+12, (int)y+5, 20, 20);

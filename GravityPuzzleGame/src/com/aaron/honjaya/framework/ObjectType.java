@@ -1,5 +1,6 @@
 package com.aaron.honjaya.framework;
 
+
 import com.aaron.honjaya.objects.Player;
 
 public enum ObjectType 
@@ -12,8 +13,8 @@ public enum ObjectType
 	FLAG_D, //Gravity = down
 	FLAG_L, // gravity = left
 	FLAG_R, // gravity = right
-	FLAG_U, 
-	BUTTON;
+	FLAG_U;	
+	
 	
 	public static boolean isPlayer(GameObject obj) {
 		ObjectType temp = obj.getType();
@@ -34,6 +35,7 @@ public enum ObjectType
 		ObjectType flagType = flag.getType();
 		ObjectType playerType = player.getType();
 		
+		//makes sure player type and flag type matches. 
 		if( (flagType == FLAG_R && playerType == PLAYER_R)
 			|| (flagType == FLAG_D && playerType == PLAYER_D)
 			|| (flagType == FLAG_U && playerType == PLAYER_U)

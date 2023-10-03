@@ -12,15 +12,11 @@ public abstract class MovingObject extends GameObject{
 	}
 	protected double velX, velY;
 	protected boolean jumping = false;
-	protected boolean falling = true;
 	protected boolean left, up, right, down;
 	
 	public abstract Rectangle getBounds();
 	public abstract Rectangle getBoundsBottom();
-	public abstract Rectangle getBoundsTop();
-	public abstract Rectangle getBoundsRight();
-	public abstract Rectangle getBoundsLeft();
-	
+
 	public void setVelX(double velX) {
 		this.velX = velX;
 	}
@@ -40,14 +36,6 @@ public abstract class MovingObject extends GameObject{
 
 	public void setJumping(boolean jumping) {
 		this.jumping = jumping;
-	}
-
-	public boolean isFalling() {
-		return falling;
-	}
-
-	public void setFalling(boolean falling) {
-		this.falling = falling;
 	}
 
 	public void updateXPos() {

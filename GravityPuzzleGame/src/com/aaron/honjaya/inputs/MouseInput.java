@@ -26,6 +26,10 @@ public class MouseInput extends MouseAdapter{
 		levelSelectHandler = this.game.getLevelSelectHandler(); 
 	}
 	
+	
+	//Depending on GameState, mouseInputs differ. 
+	
+	
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		switch(GameState.state) {

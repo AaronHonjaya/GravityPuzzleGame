@@ -27,8 +27,12 @@ public class LevelManager{
 	private HashMap<UUID, GameObject> levelObjects;
 	
 	private PlayingHandler playingHandler;
+	
+	//two lists for levels and tutorial levels. 
 	private ArrayList<BufferedImage> levels = new ArrayList<>();
 	private ArrayList<BufferedImage> tutorialLevels = new ArrayList<>();
+	
+	
 	private int numPlayers; 
 	private int numPlayersFinished;
 	private boolean levelFinished;
@@ -73,6 +77,7 @@ public class LevelManager{
 		BufferedImage image = sl.loadImage(Constants.LEVEL_SHEET);
 		int row = 0;
 		
+		//stores subimages from sprite sheet into arrays. 
 		while(levels.size() < NUM_LEVELS) {
 			for(int col = 0; col < NUM_COLUMNS && col < NUM_LEVELS; col++) {
 				levels.add(image.getSubimage(col*LEVEL_SHEET_WIDTH, 
@@ -134,7 +139,8 @@ public class LevelManager{
 		levelFinished = false;
 		solidTile = new boolean[Game.HEIGHT_IN_TILES][Game.WIDTH_IN_TILES];
 		
-		
+		//try catch is for testing. Will be changed later with a "you have finished!" screen
+		//this level will not be able to be completed so that the currLevel never goes beyond the numLevels. 
 		try {
 			if(this.state == GameState.PLAYING) {
 				image = levels.get(currLevel);
@@ -151,34 +157,36 @@ public class LevelManager{
 		}
 		
 		
-		for(int xx = 0; xx < Game.WIDTH_IN_TILES; xx++) {
-			for(int yy = 0; yy < Game.HEIGHT_IN_TILES; yy++) {
-				Color c = new Color(image.getRGB(xx, yy));
+		for(int x = 0; x < Game.WIDTH_IN_TILES; x++) {
+			for(int y = 0; y < Game.HEIGHT_IN_TILES; y++) {
+				
+				//level is created based on the RGB values of each specific pixel. 
+				Color c = new Color(image.getRGB(x, y));
 				int red = c.getRed();
 				int green = c.getGreen();
 				int blue = c.getBlue();
 				
 				
 				if(red == 255 && green == 255 && blue == 255) {
-					solidTile[yy][xx] = true;
-					Tile temp = new Tile(xx*Game.TILE_SIZE, yy*Game.TILE_SIZE, ObjectType.BLOCK);
+					solidTile[y][x] = true;
+					Tile temp = new Tile(x*Game.TILE_SIZE, y*Game.TILE_SIZE, ObjectType.BLOCK);
 					levelObjects.put(temp.getID(), temp);
 				}
 				else if(red == 255 && green == 0 && blue == 0) {
-					Player temp = new Player(xx*Game.TILE_SIZE, yy*Game.TILE_SIZE, ObjectType.PLAYER_D);
+					Player temp = new Player(x*Game.TILE_SIZE, y*Game.TILE_SIZE, ObjectType.PLAYER_D);
 					playingHandler.addPlayer(temp);
 					numPlayers++;
 				}
 				else if(red == 0 && green == 0 && blue == 255) {
-					Player temp = new Player(xx*Game.TILE_SIZE, yy*Game.TILE_SIZE, ObjectType.PLAYER_R);
+					Player temp = new Player(x*Game.TILE_SIZE, y*Game.TILE_SIZE, ObjectType.PLAYER_R);
 					playingHandler.addPlayer(temp);
 					numPlayers++;
 				}
 				else if(red == 0 && green == 148 && blue == 255) {
-					playingHandler.addObject(new Flag(xx*Game.TILE_SIZE, yy*Game.TILE_SIZE, ObjectType.FLAG_R));
+					playingHandler.addObject(new Flag(x*Game.TILE_SIZE, y*Game.TILE_SIZE, ObjectType.FLAG_R));
 				}
 				else if(red == 255 && green == 106 && blue == 0) {
-					playingHandler.addObject(new Flag(xx*Game.TILE_SIZE, yy*Game.TILE_SIZE, ObjectType.FLAG_D));
+					playingHandler.addObject(new Flag(x*Game.TILE_SIZE, y*Game.TILE_SIZE, ObjectType.FLAG_D));
 				}
 			}
 		}
@@ -200,6 +208,7 @@ public class LevelManager{
 
 
 	public boolean isLevelFinished() {
+		//don't want to have level finished when there are zero players. 
 		return (numPlayers == numPlayersFinished && numPlayers != 0);
 	}
 

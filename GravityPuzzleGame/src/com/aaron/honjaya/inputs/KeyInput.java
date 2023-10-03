@@ -30,6 +30,11 @@ public class KeyInput extends KeyAdapter {
 
 	}
 	
+	
+	//Depending on GameState, keyInputs differ
+	
+	
+	
 	public void keyPressed(KeyEvent e) {
 		switch(GameState.state) {
 			case MENU:

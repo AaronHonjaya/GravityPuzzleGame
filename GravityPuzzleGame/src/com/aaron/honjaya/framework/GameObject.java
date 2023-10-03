@@ -14,12 +14,14 @@ public abstract class GameObject {
 	protected double width, height;
 	
 	
+	//edges of the window. Not used yet, but maybe in the future.
 	protected final double LEFT_BOARDER = 0;
 	protected final double RIGHT_BOARDER = Game.WIDTH - this.width;
 	protected final double TOP_BOARDER = 0;
 	protected final double BOTTOM_BOARDER = Game.HEIGHT - this.height;
 	
 
+	//every object has a UUID for identification. 
 	protected UUID id;
 	
 	public GameObject() {};
@@ -31,8 +33,11 @@ public abstract class GameObject {
 		this.id = UUID.randomUUID();
 	}
 	
+	//every object ticks and renders. In some objects, tick may not do anything. 
 	public abstract void tick();
 	public abstract void render(Graphics g);
+	
+	//every object needs to have a hitbox. 
 	public abstract Rectangle getBounds();
 
 

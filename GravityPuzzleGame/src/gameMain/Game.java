@@ -28,7 +28,6 @@ import gameStates.PlayingHandler;
 public class Game extends Canvas implements Runnable{
 	
 
-	//private static final long serialVersionUID = 1L;
 	public static final int TILE_SIZE = 32;
 	
 	public static final int WIDTH_IN_TILES = 25;

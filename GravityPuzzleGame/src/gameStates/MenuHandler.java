@@ -13,8 +13,8 @@ import com.aaron.honjaya.ui.MenuButton;
 
 import gameMain.Game;
 
-//adapted from //youtu.be/zGrLCHROa4s?si=ZuTVxIi-uoDQMvUC. 
-// Modified by Aaron Honjaya - University of Washington
+//credit: //youtu.be/zGrLCHROa4s?si=ZuTVxIi-uoDQMvUC. 
+// Slightly Modified by Aaron Honjaya - University of Washington
 
 
 public class MenuHandler implements Handler{
