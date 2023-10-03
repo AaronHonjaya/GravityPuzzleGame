@@ -5,6 +5,10 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+//adapted from https://youtu.be/jedilHUPO7c?si=scFFNd3shhMsyt90
+//Modified by Aaron Honjaya - University of Washington
+
+
 public class SpriteLoader {
 
 	private BufferedImage image;

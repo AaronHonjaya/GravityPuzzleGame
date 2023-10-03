@@ -6,6 +6,7 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
 import java.util.*;
 
 import com.aaron.honjaya.framework.*;
@@ -120,6 +121,10 @@ public class LevelManager{
 	}
 
 	
+	
+	
+	//adapted from https://youtu.be/1TFDOT1HiBo?si=oKgnLm7hqEjlBA3z
+	//Modified heavily by Aaron Honjaya - University of Washington. 
 	public void loadLevel() {
 		clearLevel();
 		numPlayers = 0;
@@ -148,12 +153,11 @@ public class LevelManager{
 		
 		for(int xx = 0; xx < Game.WIDTH_IN_TILES; xx++) {
 			for(int yy = 0; yy < Game.HEIGHT_IN_TILES; yy++) {
-				int pixel = image.getRGB(xx, yy);
-				int red = (pixel >> 16) & 0xff;
-				int green = (pixel >> 8) & 0xff;
-				int blue = (pixel) & 0xff;
+				Color c = new Color(image.getRGB(xx, yy));
+				int red = c.getRed();
+				int green = c.getGreen();
+				int blue = c.getBlue();
 				
-				//System.out.println("R: " + red + "G: " + green + "B:" + blue);
 				
 				if(red == 255 && green == 255 && blue == 255) {
 					solidTile[yy][xx] = true;
