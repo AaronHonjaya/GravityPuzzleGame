@@ -29,10 +29,12 @@ public class LevelSelectHandler extends MenuHandler implements Handler {
 		int xOffset = 50; 
 		int yOffset = 50;
 		int lvlNum = 1;
-		buttons.add(new LevelButton(xOffset, 100, lvlNum));
+		String str = "LEVEL " + lvlNum;
+		buttons.add(new MenuButton(xOffset, 100, 100, 50, str, 20, GameState.PLAYING));
 		lvlNum++;
 				
 		while(buttons.size() < LevelManager.NUM_LEVELS) {
+			str = "LEVEL " + lvlNum;
 			
 			Button prevButton = buttons.get(lvlNum-2);
 			int nextX = (int)prevButton.getX() + Button.getWidth() + xOffset;
@@ -44,7 +46,7 @@ public class LevelSelectHandler extends MenuHandler implements Handler {
 				nextY = (int)prevButton.getY() + Button.getHeight() + yOffset;
 			}
 			
-			buttons.add(new LevelButton(nextX, nextY, lvlNum));
+			buttons.add(new MenuButton(nextX, nextY, 100, 50, str, 20, GameState.PLAYING));
 			lvlNum++;
 		}
 	}
@@ -64,6 +66,7 @@ public class LevelSelectHandler extends MenuHandler implements Handler {
 		Graphics2D g2d = (Graphics2D) g;
 		drawInstructions(g2d);
 	}
+	
 	private void drawInstructions(Graphics2D g2d){
 		
 		
@@ -97,11 +100,11 @@ public class LevelSelectHandler extends MenuHandler implements Handler {
 		resetButtons();
 	}
 
+	@Override
 	public void keyPressed(KeyEvent e) {
-		if(e.getKeyCode() == KeyEvent.VK_ESCAPE)
+		if(e.getKeyCode() == KeyEvent.VK_ESCAPE) 
 			GameState.state = GameState.MENU;
 	}
-
 
 
 

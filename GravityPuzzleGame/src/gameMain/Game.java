@@ -53,7 +53,7 @@ public class Game extends Canvas implements Runnable{
 	public void init(){
 		
 		this.requestFocus();
-		
+				
 		playingHandler = new PlayingHandler();
 		
 		menuHandler = new MenuHandler();
@@ -127,6 +127,7 @@ public class Game extends Canvas implements Runnable{
 		switch(GameState.state) {
 			case MENU:
 				menuHandler.tick();
+			case TUTORIAL:
 			case PLAYING:
 				playingHandler.tick();
 				break;
@@ -159,6 +160,7 @@ public class Game extends Canvas implements Runnable{
 			case MENU:
 				menuHandler.render(g);
 				break;
+			case TUTORIAL:
 			case PLAYING:
 				playingHandler.render(g);
 				break;

@@ -16,6 +16,9 @@ public class SpriteLoader {
 
 	
 
+	public SpriteLoader() {
+		
+	}
 	
 	public SpriteLoader(String path) {
 		try {

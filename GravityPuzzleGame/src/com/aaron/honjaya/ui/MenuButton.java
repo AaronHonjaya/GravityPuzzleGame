@@ -1,6 +1,8 @@
 package com.aaron.honjaya.ui;
 
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -16,55 +18,67 @@ import gameStates.GameState;
 
 public class MenuButton extends Button{
 	
-	private int rowIndex, imgIndex;
-	private int xOffsetCenter = SpriteLoader.BUTTON_WIDTH / 2;
-	private BufferedImage[] images;
-	
-	
+	protected Rectangle bounds;
+	protected String str;
+	protected final Color myLightGray = new Color(192, 192, 192);
+	protected final Color myDarkGray = new Color(160, 160, 160);
+	protected Color currColor;
+	protected int fontSize;
+
 
 	
-	public MenuButton(double x, double y, int rowIndex, GameState state) {
+	public MenuButton(double x, double y, int width, int height, String title, int fontSize, GameState state) {
 		super(x,y,state);
-		this.rowIndex = rowIndex;
-		loadImages();
-		width = images[0].getWidth();
-		height = images[0].getHeight();
-	}
-	
-	private void loadImages() {
-		SpriteLoader sl = new SpriteLoader(Constants.BUTTON_SHEET);
-		images = new BufferedImage[3];
-		for(int i = 0; i < images.length; i++) {
-			images[i] = sl.grabButtonImage(i, rowIndex);
-		}
-		
+		this.width = width;
+		this.height = height;
+		bounds = new Rectangle((int)x, (int)y, width, height);
+		str = title;
+		this.fontSize = fontSize;
 	}
 
 	
 	public void tick() {
-		if(mouseOver) {
-			imgIndex = 1;
-		}
+		if(mouseOver) 
+			currColor = myLightGray;
 		else if(mousePressed)
-			imgIndex = 2;
+			currColor = myDarkGray;
 		else
-			imgIndex = 0;
+			currColor = Color.white;
 	}
 	
 
 	public void render(Graphics g) {
-		g.drawImage(images[imgIndex], (int)(x - xOffsetCenter), (int)y, null);		
-		Graphics2D g2d = (Graphics2D) g;
-		g.setColor(Color.green);
+		Graphics2D g2d = (Graphics2D) g;		
+		g.setColor(currColor);
+		g2d.fill(bounds);
 		
-		g2d.draw(getBounds());
-	}
-	
-	
-	public Rectangle getBounds() {
-		return (new Rectangle((int)(x-xOffsetCenter), (int)y, Constants.BUTTON_WIDTH, Constants.BUTTON_HEIGHT));
+		drawText(g2d);
 	}
 
+	private void drawText(Graphics2D g2d) {
+		
+		// Although slightly altered, original code to center the text was found online. Credit is below: 
+		// http://www.java2s.com/Tutorials/Java/Graphics_How_to/Text/Center_a_string_in_a_rectangle.htm
+		
+		g2d.setColor(Color.BLACK);
+		
+		Font font = new Font("Arial", Font.BOLD, fontSize);
+		g2d.setFont(font);
+		FontMetrics fm = g2d.getFontMetrics();
+		
+		int textX = ((int)bounds.getCenterX() - (fm.stringWidth(str)/ 2) );
+		int textY = ((int)bounds.getCenterY() - (fm.getHeight()/ 2) + fm.getAscent());
+		
+		g2d.drawString(str, textX, textY);
+	}
+	
+
+	public Rectangle getBounds() {
+		return bounds;
+	}
+
+
+	
 	
 	
 	

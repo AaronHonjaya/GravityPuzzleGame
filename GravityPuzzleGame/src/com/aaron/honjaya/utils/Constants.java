@@ -11,6 +11,7 @@ public class Constants {
 	public static final String SPRITE_SHEET = "/smallerSpriteSheet.png";
 	public static final String LEVEL_SHEET = "/levelSheet.png";
 	public static final String TEST_LEVEL_SHEET = "/testLevel.png";
+	public static final String TUTORIAL_LEVEL_SHEET = "/tutorialLevels.png";
 
 	
 	public static final int SPRITE_WIDTH = 32;

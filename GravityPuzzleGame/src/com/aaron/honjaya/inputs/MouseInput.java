@@ -30,6 +30,7 @@ public class MouseInput extends MouseAdapter{
 			case MENU:
 				menuHandler.mouseClicked(e);
 				break;
+			case TUTORIAL:
 			case PLAYING:
 				playingHandler.mouseClicked(e);
 				break;
@@ -48,6 +49,7 @@ public class MouseInput extends MouseAdapter{
 			case MENU:
 				menuHandler.mousePressed(e);
 				break;
+			case TUTORIAL:
 			case PLAYING:
 				playingHandler.mousePressed(e);
 				break;
@@ -67,6 +69,7 @@ public class MouseInput extends MouseAdapter{
 			case MENU:
 				menuHandler.mouseReleased(e);
 				break;
+			case TUTORIAL:
 			case PLAYING:
 				playingHandler.mouseReleased(e);
 				break;
@@ -86,6 +89,7 @@ public class MouseInput extends MouseAdapter{
 			case MENU:
 				menuHandler.mouseMoved(e);
 				break;
+			case TUTORIAL:
 			case PLAYING:
 				playingHandler.mouseMoved(e);
 				break;

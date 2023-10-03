@@ -1,6 +1,10 @@
 package level;
 
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.*;
 
@@ -12,6 +16,7 @@ import com.aaron.honjaya.utils.Constants;
 import com.aaron.honjaya.utils.SpriteLoader;
 
 import gameMain.Game;
+import gameStates.GameState;
 import gameStates.PlayingHandler;
 
 public class LevelManager{
@@ -22,42 +27,63 @@ public class LevelManager{
 	
 	private PlayingHandler playingHandler;
 	private ArrayList<BufferedImage> levels = new ArrayList<>();
+	private ArrayList<BufferedImage> tutorialLevels = new ArrayList<>();
 	private int numPlayers; 
 	private int numPlayersFinished;
 	private boolean levelFinished;
 	private boolean[][] solidTile;
 	private int currLevel;
+	private int currTutorialLevel;
+	private String[] tutorialInstructions;
 	
+	public static final int NUM_TUTORIAL_LEVELS = 4;
 	public static final int NUM_LEVELS = 2;
 	public static final int NUM_COLUMNS = 10;
 	private static final int LEVEL_SHEET_WIDTH = Game.WIDTH_IN_TILES;
 	private static final int LEVEL_SHEET_HEIGHT = Game.HEIGHT_IN_TILES;
 
 
-	
+	private GameState state = GameState.PLAYING;
 
 
 
 	public LevelManager(PlayingHandler playingHandler) {
 		levelObjects = new HashMap<>();
 		currLevel = 0;
+		currTutorialLevel = 0;
 		this.playingHandler = playingHandler;
 		loadLevelImages();
+		initTutorialInstructions();
 	}
 	
 	
+	private void initTutorialInstructions() {
+		tutorialInstructions = new String[NUM_TUTORIAL_LEVELS];
+		tutorialInstructions[0] = "Use arrow keys to move and reach the flag";
+		tutorialInstructions[1] = "Blue's gravity is in a different direction. Use W,D, and space to move";
+		tutorialInstructions[2] = "Red's flag is too high to jump and reach. Can Blue help him somehow?";
+		tutorialInstructions[3] = "Tutorial Completed! Press 'ESC' to go back to the Menu.";
+
+	}
+
+
 	private void loadLevelImages() {
-		SpriteLoader sl = new SpriteLoader(Constants.LEVEL_SHEET);
-		BufferedImage image = sl.getImage();
+		SpriteLoader sl = new SpriteLoader();
+		BufferedImage image = sl.loadImage(Constants.LEVEL_SHEET);
 		int row = 0;
 		
 		while(levels.size() < NUM_LEVELS) {
-	
-			for(int col = 0; col < NUM_COLUMNS; col++) {
+			for(int col = 0; col < NUM_COLUMNS && col < NUM_LEVELS; col++) {
 				levels.add(image.getSubimage(col*LEVEL_SHEET_WIDTH, 
 						row*LEVEL_SHEET_HEIGHT, LEVEL_SHEET_WIDTH, LEVEL_SHEET_HEIGHT));
 			}
 			row++;
+		}
+		row = 0;
+		image = sl.loadImage(Constants.TUTORIAL_LEVEL_SHEET);
+		for(int col = 0; col < NUM_TUTORIAL_LEVELS; col++) {
+			tutorialLevels.add(image.getSubimage(col*LEVEL_SHEET_WIDTH, 
+					row*LEVEL_SHEET_HEIGHT, LEVEL_SHEET_WIDTH, LEVEL_SHEET_HEIGHT));
 		}
 	}
 
@@ -66,51 +92,59 @@ public class LevelManager{
 		for(UUID objectId : levelObjects.keySet()) {
 			levelObjects.get(objectId).render(g);
 		}
+		if(this.state == GameState.TUTORIAL) {
+			drawTxt((Graphics2D) g);
+		}
 	}
+
+	private void drawTxt(Graphics2D g2d) {
+		String str = tutorialInstructions[currTutorialLevel];
+		g2d.setColor(Color.green);
+		Font font = new Font("Arial", Font.BOLD, 20);
+		g2d.setFont(font);
+		FontMetrics fm = g2d.getFontMetrics();
+		
+		int textX = ((Game.WIDTH - fm.stringWidth(str))/ 2 );
+		int textY = (100 - (fm.getHeight()/ 2) + fm.getAscent());
+		
+		g2d.drawString(str, textX, textY);
+	}
+
+
+	public void loadNextLevel() {
+		if(this.state == GameState.PLAYING)
+			currLevel++;
+		else if (this.state == GameState.TUTORIAL)
+			currTutorialLevel++;
+		loadLevel();
+	}
+
 	
-	public boolean[][] getSolidTile() {
-		return solidTile;
-	}
-
-
-	public void setSolidTile(boolean[][] solidTile) {
-		this.solidTile = solidTile;
-	}
-
-
-	public HashMap<UUID, GameObject> getLevelObjects() {
-		return levelObjects;
-	}
-
-
-
-
-	public ArrayList<BufferedImage> getLevels() {
-		return levels;
-	}
-
-
-	public int getNumPlayersFinished() {
-		return numPlayersFinished;
-	}
-
-
 	public void loadLevel() {
-		playingHandler.removeAll();
-		levelObjects.clear();
+		clearLevel();
 		numPlayers = 0;
 		numPlayersFinished = 0;
 		
 		BufferedImage image = null;
-		
-		try {
-			image = levels.get(currLevel);
-		}catch(Exception e) {
-			currLevel = 0;
-			image = levels.get(currLevel);
-		}
 		levelFinished = false;
 		solidTile = new boolean[Game.HEIGHT_IN_TILES][Game.WIDTH_IN_TILES];
+		
+		
+		try {
+			if(this.state == GameState.PLAYING) {
+				image = levels.get(currLevel);
+			}
+			else if(this.state == GameState.TUTORIAL) {
+				System.out.println("loading tutoral level: " + currTutorialLevel);
+				image = tutorialLevels.get(currTutorialLevel);
+			}
+				
+		}catch(Exception e) {
+			System.out.println("Error: Level Not Found");
+			GameState.state = GameState.MENU;
+			return;
+		}
+		
 		
 		for(int xx = 0; xx < Game.WIDTH_IN_TILES; xx++) {
 			for(int yy = 0; yy < Game.HEIGHT_IN_TILES; yy++) {
@@ -118,7 +152,8 @@ public class LevelManager{
 				int red = (pixel >> 16) & 0xff;
 				int green = (pixel >> 8) & 0xff;
 				int blue = (pixel) & 0xff;
-
+				
+				//System.out.println("R: " + red + "G: " + green + "B:" + blue);
 				
 				if(red == 255 && green == 255 && blue == 255) {
 					solidTile[yy][xx] = true;
@@ -127,13 +162,11 @@ public class LevelManager{
 				}
 				else if(red == 255 && green == 0 && blue == 0) {
 					Player temp = new Player(xx*Game.TILE_SIZE, yy*Game.TILE_SIZE, ObjectType.PLAYER_D);
-					playingHandler.addObject(temp);
 					playingHandler.addPlayer(temp);
 					numPlayers++;
 				}
 				else if(red == 0 && green == 0 && blue == 255) {
 					Player temp = new Player(xx*Game.TILE_SIZE, yy*Game.TILE_SIZE, ObjectType.PLAYER_R);
-					playingHandler.addObject(temp);
 					playingHandler.addPlayer(temp);
 					numPlayers++;
 				}
@@ -145,12 +178,25 @@ public class LevelManager{
 				}
 			}
 		}
-		//System.out.println(numPlayers + ", " + numPlayersFinished);
+	}
+	
+	
+	public void clearLevel() {
+		levelObjects.clear();
+		playingHandler.removeAll();
+	}
+	
+	public boolean[][] getSolidTile() {
+		return solidTile;
+	}
+	
+	public int getNumPlayersFinished() {
+		return numPlayersFinished;
 	}
 
 
 	public boolean isLevelFinished() {
-		return (numPlayers == numPlayersFinished);
+		return (numPlayers == numPlayersFinished && numPlayers != 0);
 	}
 
 	public int getNumPlayers() {
@@ -170,4 +216,22 @@ public class LevelManager{
 		this.currLevel = currLevel;
 	}
 	
+	public GameState getState() {
+		return state;
+	}
+
+
+	public void setState(GameState state) {
+		this.state = state;
+	}
+
+
+	public int getCurrTutorialLevel() {
+		return currTutorialLevel;
+	}
+
+
+	public void setCurrTutorialLevel(int currTutorialLevel) {
+		this.currTutorialLevel = currTutorialLevel;
+	}
 }

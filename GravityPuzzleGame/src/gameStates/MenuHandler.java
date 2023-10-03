@@ -19,17 +19,21 @@ public class MenuHandler implements Handler{
 	private static final int EXIT = 3;
 
 	
-	protected ArrayList<Button> buttons = new ArrayList<>();
+	protected ArrayList<Button> buttons;
 	
 	
 	public MenuHandler() {
+		buttons = new ArrayList<>();
 		loadButtons();
 	}
 	
 	private void loadButtons() {
-		buttons.add(new MenuButton(Game.WIDTH/2	, 100, 0, GameState.PLAYING));
-		buttons.add(new MenuButton(Game.WIDTH/2	, 250, 1, GameState.LEVEL_SELECT));
-		buttons.add(new MenuButton(Game.WIDTH/2	, 400, 2, GameState.EXIT));
+		int buttonWidth = 200, buttonHeight = 75;
+		buttons.add(new MenuButton(Game.WIDTH/2	- buttonWidth/2, 100, buttonWidth, buttonHeight, "PLAY", 36, GameState.PLAYING));
+		buttons.add(new MenuButton(Game.WIDTH/2	- buttonWidth/2, 200, buttonWidth, buttonHeight, "LEVELS", 36, GameState.LEVEL_SELECT));
+		buttons.add(new MenuButton(Game.WIDTH/2	- buttonWidth/2, 300, buttonWidth, buttonHeight, "TUTORIAL", 36, GameState.TUTORIAL));
+		buttons.add(new MenuButton(Game.WIDTH/2	- buttonWidth/2, 400, buttonWidth, buttonHeight, "EXIT", 36, GameState.EXIT));
+
 	}
 
 	

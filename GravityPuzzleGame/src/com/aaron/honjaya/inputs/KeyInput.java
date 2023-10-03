@@ -33,6 +33,7 @@ public class KeyInput extends KeyAdapter {
 			case MENU:
 				menuHandler.keyPressed(e);
 				break;
+			case TUTORIAL:
 			case PLAYING:
 				playingHandler.keyPressed(e);
 				break;
@@ -50,6 +51,7 @@ public class KeyInput extends KeyAdapter {
 			case MENU:
 				menuHandler.keyReleased(e);
 				break;
+			case TUTORIAL:
 			case PLAYING:
 				playingHandler.keyReleased(e);
 				break;
