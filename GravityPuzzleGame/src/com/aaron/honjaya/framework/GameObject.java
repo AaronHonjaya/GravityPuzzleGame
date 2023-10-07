@@ -11,7 +11,7 @@ public abstract class GameObject {
 	
 	protected double x, y;
 	protected ObjectType type; 
-	protected double width, height;
+	protected int width, height;
 	
 	
 	//edges of the window. Not used yet, but maybe in the future.
@@ -48,19 +48,19 @@ public abstract class GameObject {
 		return this.id;
 	}
 	
-	public double getWidth() {
+	public int getWidth() {
 		return width;
 	}
 
-	public void setWidth(double width) {
+	public void setWidth(int width) {
 		this.width = width;
 	}
 
-	public double getHeight() {
+	public int getHeight() {
 		return height;
 	}
 
-	public void setHeight(double height) {
+	public void setHeight(int height) {
 		this.height = height;
 	}
 

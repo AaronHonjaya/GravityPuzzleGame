@@ -115,10 +115,15 @@ public class PlayingHandler implements Handler{
 			if(!playerInVerticalPath)
 				tempY = players.get(id);
 			
-			if(CollisionFunctions.playerIsInPath(player, tempX, true, false)) {
+			int futureX = (int) (player.getX() + player.getVelX());
+			int futureY = (int) (player.getY() + player.getVelY());
+			
+			if(CollisionFunctions.playerIsInPath(futureX, (int)player.getY(), 
+					(int)player.getWidth(), (int)player.getHeight(), tempX)) {
 				playerInHorizontalPath = true;
 			}
-			if(CollisionFunctions.playerIsInPath(player, tempY, false, true)) {
+			if(CollisionFunctions.playerIsInPath((int)player.getX(), futureY, 
+					(int)player.getWidth(), (int)player.getHeight(), tempX)) {
 				playerInVerticalPath = true;
 			}
 		}
@@ -135,11 +140,11 @@ public class PlayingHandler implements Handler{
 				//and minus if they are standing on the left side. 
 				double tempFutureX = player.getX()+player.getVelX();
 				
-				if(player.getX() > tempX.getX()) {
-					//tempX is on the left
+				
+				if(tempX.getType() == ObjectType.PLAYER_R) {
 					tempFutureX -= tempX.getWidth(); 
-				}else {
-					//tempX is on the right
+
+				}else if(tempX.getType() == ObjectType.PLAYER_L){
 					tempFutureX += player.getWidth();
 				}
 				
@@ -148,7 +153,7 @@ public class PlayingHandler implements Handler{
 				//first checks if we can set tempX to the future position. 
 				//This is so that we don't push tempX into a wall. 
 				if(CollisionFunctions.canSetHere(tempFutureX, tempX.getY(),  
-						tempX.getWidth(), tempX.getHeight(), levelManager.getSolidTile()))
+						tempX, levelManager.getSolidTile(), players))
 				{
 					//if so, we just move the player and set tempX to the futureX. 
 					movePlayerHorizontally(player);
@@ -160,7 +165,13 @@ public class PlayingHandler implements Handler{
 					//So we set tempX to the position next to the wall and then set player to the
 					//position right next to tempX. 
 					tempX.setX(CollisionFunctions.getXPosNextToWall(tempX));
-					player.setX(tempX.getX() + tempX.getHeight());
+					if(tempX.getType() == ObjectType.PLAYER_R) {
+						player.setX(tempX.getX() + tempX.getWidth());
+
+					}else if(tempX.getType() == ObjectType.PLAYER_L){
+						player.setX(tempX.getX() - player.getWidth());
+					}
+				
 				}					
 			}else{
 				//if they are not 
@@ -170,7 +181,9 @@ public class PlayingHandler implements Handler{
 					player.setX(tempX.getX()+player.getWidth());
 				
 					player.setVelX(0);
-					if(player.isInAir() && player.getType() == ObjectType.PLAYER_R) {
+					if(player.isInAir() && 
+							(player.getType() == ObjectType.PLAYER_R || player.getType() == ObjectType.PLAYER_L)) 
+					{
 						player.setJumping(false);
 						player.setInAir(false);
 					}
@@ -188,10 +201,18 @@ public class PlayingHandler implements Handler{
 		else
 		{			
 			if(tempY.getBoundsBottom().intersects(player.getBounds())){	
-				double tempFutureY = player.getY()+player.getVelY()-tempY.getHeight();
+				
+				double tempFutureY = player.getY()+player.getVelY();
+				
+				if(tempY.getType() == ObjectType.PLAYER_D) {
+					tempFutureY -= tempX.getHeight(); 
+				}else if(tempY.getType() == ObjectType.PLAYER_U){
+					tempFutureY += player.getHeight();
+				}
+				
 				
 				if(CollisionFunctions.canSetHere(tempY.getX(), tempFutureY, 
-						tempY.getWidth(), tempY.getHeight(), levelManager.getSolidTile()))
+						tempY, levelManager.getSolidTile(), players))
 				{
 					movePlayerVertically(player);
 					tempY.setY(tempFutureY);
@@ -199,9 +220,14 @@ public class PlayingHandler implements Handler{
 				else
 				{
 					tempY.setY(CollisionFunctions.getYPosNextToFloorOrRoof(tempY));
-					player.setY(tempY.getY() + tempY.getHeight());
+					if(tempY.getType() == ObjectType.PLAYER_D) {
+						player.setY(tempY.getY() + tempY.getHeight());
+					}else if(tempY.getType() == ObjectType.PLAYER_U){
+						player.setY(tempY.getY() - player.getHeight());
+					}
 				}
 			}else {
+				
 				if(player.getVelY() > 0) {
 					player.setY(tempY.getY() - player.getHeight());
 				}
@@ -209,10 +235,12 @@ public class PlayingHandler implements Handler{
 					player.setY(tempY.getY() + player.getHeight());
 				}
 					player.setVelY(0);
-					if(player.isInAir() && player.getType() == ObjectType.PLAYER_D) {
+					if(player.isInAir() && 
+							(player.getType() == ObjectType.PLAYER_D || player.getType() == ObjectType.PLAYER_U)) 
+					{
 						player.setJumping(false);
 						player.setInAir(false);
-				}
+					}
 			}
 		}
 				
@@ -237,7 +265,6 @@ public class PlayingHandler implements Handler{
 					player.setInAir(false);
 				}
 				player.setVelX(0);
-
 			}
 			else if(type == ObjectType.PLAYER_L) {
 				if(player.getVelX() < 0) {
@@ -267,7 +294,7 @@ public class PlayingHandler implements Handler{
 				}
 				player.setVelY(0);
 			}
-			else if(type == ObjectType.PLAYER_L) {
+			else if(type == ObjectType.PLAYER_U) {
 				if(player.getVelY() < 0) {
 					player.setJumping(false);
 					player.setInAir(false);
@@ -349,6 +376,7 @@ public class PlayingHandler implements Handler{
 		
 	}
 
+	
 	@Override
 	public void keyPressed(KeyEvent e) {
 		int key = e.getKeyCode();
@@ -364,12 +392,7 @@ public class PlayingHandler implements Handler{
 						tempPlayer.setVelX(-5);
 						break;
 					case KeyEvent.VK_UP:
-						//only jump if the player isn't already jumping or in the air. 
-						if(!tempPlayer.isJumping() && !tempPlayer.isInAir()) {								
-							tempPlayer.setJumping(true);
-							tempPlayer.setInAir(true);
-							tempPlayer.setVelY(-10);
-						}
+						tempPlayer.jump();
 						break;
 				}
 			}
@@ -382,15 +405,35 @@ public class PlayingHandler implements Handler{
 						tempPlayer.setVelY(-5);
 						break;
 					case KeyEvent.VK_SPACE:
-						//same as above. 
-						if(!tempPlayer.isJumping() && !tempPlayer.isInAir()) {
-							tempPlayer.setJumping(true);
-							tempPlayer.setInAir(true);
-							tempPlayer.setVelX(-10);
-						}
+						tempPlayer.jump();
 						break;
 				}
-			}			
+			}
+			else if (tempPlayer.getType() == ObjectType.PLAYER_L) {
+				switch(key) {
+					case KeyEvent.VK_Q:
+						tempPlayer.setVelY(-5);
+						break;
+					case KeyEvent.VK_E:
+						tempPlayer.setVelY(5);
+						break;
+					case KeyEvent.VK_W:
+						tempPlayer.jump();
+						break;
+				}
+			}else if(tempPlayer.getType() == ObjectType.PLAYER_U) {
+				switch(key) {
+					case KeyEvent.VK_J:
+						tempPlayer.setVelX(-5);
+						break;
+					case KeyEvent.VK_L:
+						tempPlayer.setVelX(5);
+						break;
+					case KeyEvent.VK_K:
+						tempPlayer.jump();
+						break;
+				}
+			}
 		}
 		if(key == KeyEvent.VK_ESCAPE) {
 			GameState.state = GameState.MENU;
@@ -429,6 +472,26 @@ public class PlayingHandler implements Handler{
 						break;
 					case KeyEvent.VK_D:
 						tempPlayer.setVelY(0);
+						break;
+				}
+			}
+			else if (tempPlayer.getType() == ObjectType.PLAYER_L) {
+				switch(key) {
+					case KeyEvent.VK_Q:
+						tempPlayer.setVelY(0);
+						break;
+					case KeyEvent.VK_E:
+						tempPlayer.setVelY(0);
+						break;
+				}
+			}
+			else if(tempPlayer.getType() == ObjectType.PLAYER_U) {
+				switch(key) {
+					case KeyEvent.VK_J:
+						tempPlayer.setVelX(0);
+						break;
+					case KeyEvent.VK_L:
+						tempPlayer.setVelX(0);
 						break;
 				}
 			}

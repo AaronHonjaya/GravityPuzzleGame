@@ -179,8 +179,11 @@ public class LevelManager{
 				}
 				else if(red == 0 && green == 0 && blue == 255) {
 					Player temp = new Player(x*Game.TILE_SIZE, y*Game.TILE_SIZE, ObjectType.PLAYER_R);
+					Player temp2 = new Player((x-1)*Game.TILE_SIZE, (y-1)*Game.TILE_SIZE, ObjectType.PLAYER_U);
 					playingHandler.addPlayer(temp);
-					numPlayers++;
+					playingHandler.addPlayer(temp2);
+
+					numPlayers+=2;
 				}
 				else if(red == 0 && green == 148 && blue == 255) {
 					playingHandler.addObject(new Flag(x*Game.TILE_SIZE, y*Game.TILE_SIZE, ObjectType.FLAG_R));

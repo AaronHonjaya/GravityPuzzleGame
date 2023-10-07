@@ -29,6 +29,7 @@ public class Player extends MovingObject {
 	private BufferedImage images[];
 	private int imgIndex;
 	private boolean inAir;
+	private final int jumpSpeed = 10;
 
 
 
@@ -67,7 +68,7 @@ public class Player extends MovingObject {
 		g.drawImage(images[imgIndex], (int) x, (int) y, null);
 
 		Graphics2D g2d = (Graphics2D) g;
-		g.setColor(Color.green);
+		g.setColor(Color.LIGHT_GRAY);
 
 		// draw hitboxes for debugging.
 		g2d.draw(getBoundsBottom());
@@ -84,6 +85,27 @@ public class Player extends MovingObject {
 	public void updateYPos() {
 		y += velY;
 	}
+	
+	public void jump() {
+		if(!isJumping() && !isInAir()) {								
+			jumping = true;
+		    inAir = true;
+		    switch(type) {
+				case PLAYER_D:
+					velY = -jumpSpeed;
+					break;
+				case PLAYER_L:
+					velX = jumpSpeed;
+					break;
+				case PLAYER_R:
+					velX = -jumpSpeed;
+					break;
+				case PLAYER_U:
+					velY = jumpSpeed;
+					break;	     
+		    }
+		}
+	}
 
 	public void updateGrav() {
 		// grav differs based on Object Type
@@ -97,7 +119,7 @@ public class Player extends MovingObject {
 		case PLAYER_U:
 			velY -= GRAVITY;
 			if (Math.abs(velY) >= maxVel) {
-				velY = maxVel;
+				velY = -maxVel;
 			}
 			break;
 		case PLAYER_R:
@@ -175,21 +197,19 @@ public class Player extends MovingObject {
 		switch (type) {
 		// case player_D is default
 		case PLAYER_L:
-			// to be added
-			return null;
-
-		case PLAYER_U:
-			// to be added
-			return null;
-
-		case PLAYER_R:
-			return new Rectangle((int) ((int) x + (width / 2)), (int) ((int) y + (height / 4)), (int) width / 2 + 2,
+			return new Rectangle((int)x -2, (int) ((int) y + (height / 4)), (int) width / 2,
 					(int) height / 2);
 
-		// return new Rectangle((int)(x+5), (int)(y+height-7), (int)width-10, (int)7);
+		case PLAYER_U:
+			return new Rectangle((int)x + (int)(width / 4), (int)y - 2, (int) width / 2,
+					(int) (height / 2) + 2);
+
+		case PLAYER_R:
+			return new Rectangle((int)x + (int)(width / 2), (int)y + (int)(height / 4), (int) width / 2 + 2,
+					(int) height / 2);
 
 		default:
-			return new Rectangle((int) ((int) x + (width / 4)), (int) ((int) y + (height / 2)), (int) width / 2,
+			return new Rectangle((int)x + (int)(width / 4), (int)y + (int)(height / 2), (int) width / 2,
 					(int) (height / 2) + 2);
 
 		}
